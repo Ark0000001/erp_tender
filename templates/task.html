@@ -1,0 +1,37 @@
+{% block task %}
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Дата и время создания</th>
+            <th>Тип задачи (конкурса)</th>
+            <th>Отв. сотрудник</th>
+            <th>Описание задачи</th>
+            <th>Ценность задачи</th>
+            <th>Сделать до:</th>
+        </tr>
+        </thead>
+        {% if user.is_authenticated %}
+            {% for tab in tabs %}
+                <tbody>
+                <tr class="{% cycle 'table-success' 'table-info' %}">
+                    <td>{{ tab.created }}</td>
+                    <td>{{ tab.type_tender }}</td>
+                    <td><a class="nav-link text-danger " href="/admin/tender/tab/">{{ tab.staffer }}</a></td>
+                    <td>{{ tab.task_info }}</td>
+                    <td>{{ tab.profit_info }}</td>
+                    <td>{{ tab.data2 }}</td>
+                </tr>{% endfor %}
+        {% else %}
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        </tbody>{% endif %}
+    </table>
+
+
+
+{% endblock task %}

@@ -7,12 +7,22 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ForeignKeyWidget
 
 from import_export.tmp_storages import CacheStorage
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
+from .models import User
+User = get_user_model()
 
 
+@admin.register(User)
+class UserAdmin(UserAdmin):
+    pass
 
 
-
-admin.site.register(Type_tender)
+class TypeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'nomer')
+    list_display_links = ('name','nomer')
+    search_fields = ('name',)
+admin.site.register(Type_tender, TypeAdmin)
 
 
 class RegResource(resources.ModelResource):
@@ -95,14 +105,29 @@ class TabAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.ManyToManyField: {'group_prod': CheckboxSelectMultiple},
     }
-    list_display = ('number_tender','url_tender','number_scheta','number_zakaza','protection','data1','data2','price1','type_tender','city','client','group_prod','info','filial','win','price2')
-    list_display_links = ('number_tender','type_tender','client')
-    search_fields = ('client__name',)
+    list_display = ('is_active','created','staffer','type_tender','task_info','data2','number_tender','url_tender','number_scheta','number_zakaza','protection','data1','price1','city','client','group_prod','info','filial','win','price2')
+    list_display_links = ('staffer','number_tender','type_tender','client')
+    search_fields = ('staffer__name','client__name','task_info')
+
+    def get_form(self,request,obj=None,**kwargs):
+        form=super(TabAdmin,self).get_form(request,obj,**kwargs)
+        form.base_fields['author'].initial=request.user
+
+        if str(request.user)!='admin':
+            form.base_fields['author'].disabled = request.user
+
+
+
+        if request.user.groups.filter(name='MyGroup').exists():
+            self.exclude=('created',)
+
+        return form
+
 admin.site.register(Tab,TabAdmin)
 
 
 class ProtectionAdmin(admin.ModelAdmin):
     list_display = ('city','client','product_info','company','data2')
     list_display_links = ('city','client','product_info','company','data2')
-    search_fields = ('client__name','company_name')
+    search_fields = ('client__name','company__name')
 admin.site.register(Protection,ProtectionAdmin)

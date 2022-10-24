@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+
+import tender.views
 
 urlpatterns = [
-    path('', include('tender.urls')),
     path('admin/', admin.site.urls),
+    path('', tender.views.Index, name='home'),
+
+    path('users/', include('tender.urls')),
 ]
