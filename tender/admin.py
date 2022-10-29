@@ -13,6 +13,11 @@ from .models import User
 User = get_user_model()
 
 
+# def all_tasks(modeladmin, request,queryset):
+#     for qs in queryset:
+#         print (qs.staffer)
+
+
 @admin.register(User)
 class UserAdmin(UserAdmin):
     pass
@@ -108,6 +113,19 @@ class TabAdmin(admin.ModelAdmin):
     list_display = ('is_active','created','staffer','type_tender','task_info','data2','number_tender','url_tender','number_scheta','number_zakaza','protection','data1','price1','city','client','group_prod','info','filial','win','price2')
     list_display_links = ('staffer','number_tender','type_tender','client')
     search_fields = ('staffer__name','client__name','task_info')
+    actions = ('complete_tasks', 'incomplete_tasks',)
+
+    def complete_tasks(self, request, queryset):
+        count = queryset.update(is_active=True)
+        self.message_user(request, f'Отметили как завершенные, следующее количество: {count} ')
+
+    complete_tasks.short_description = 'Отметить как завершенные'
+
+    def incomplete_tasks(self, request, queryset):
+        count = queryset.update(is_active=False)
+        self.message_user(request, f'Отметили как незавершенные, следующее количество: {count} ')
+
+    incomplete_tasks.short_description = 'Отметить как незавершенные'
 
     def get_form(self,request,obj=None,**kwargs):
         form=super(TabAdmin,self).get_form(request,obj,**kwargs)

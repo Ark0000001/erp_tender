@@ -15,6 +15,11 @@ urlpatterns = [
     path('skor/', Index_Skor, name='skor'),
     path('mir/', Index_Mir, name='mir'),
     path('evt/', Index_Evt, name='evt'),
+    path('ind/',ind, name='ind'),
+    path('ind/add', addition, name='add'),
+    path('ind/pri', pri, name='pri'),
+    path('ind/seb', seb, name='seb'),
+    path('ind/vyr', vyr, name='vyr'),
 
 
 ]

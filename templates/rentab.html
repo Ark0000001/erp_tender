@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block content %}
+    <p></p>
+    <p class="navbar-brand">Рассчет рентабельности</p>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+<form action="add" method="POST" class="text-warning">
+    {% csrf_token %}
+
+    Введите выручку: <input type="text" class="form-control" name="num1"><br><br>
+    Введите себестоимость: <input type="text" class="form-control" name="num2"><br><br>
+    <input class="form-control" type="submit">
+</form>
+</nav><p></p>
+    <p class="navbar-brand">Рассчет себестоимости</p>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+<form action="seb" method="POST" class="text-warning">
+    {% csrf_token %}
+
+    Введите рентабельность: <input type="text" class="form-control" name="num1"><br><br>
+    Введите выручку: <input type="text" class="form-control" name="num2"><br><br>
+    <input class="form-control" type="submit">
+</form>
+</nav><p></p>
+
+    <p class="navbar-brand">Рассчет прибыли</p>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+<form action="pri" method="POST" class="text-warning">
+    {% csrf_token %}
+
+    Введите рентабельность: <input type="text" class="form-control" name="num1"><br><br>
+    Введите выручку: <input type="text" class="form-control" name="num2"><br><br>
+    <input class="form-control" type="submit">
+</form>
+</nav>
+<p></p>
+
+
+    <p class="navbar-brand">Рассчет выручки</p>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+<form action="vyr" method="POST" class="text-warning">
+    {% csrf_token %}
+
+    Введите себестоимость: <input type="text" class="form-control" name="num1"><br><br>
+    Введите рентабельность: <input type="text" class="form-control" name="num2"><br><br>
+    <input class="form-control" type="submit">
+</form>
+</nav>
+{% endblock %}

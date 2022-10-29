@@ -1,5 +1,6 @@
 {% block task %}
-
+{% load bootstrap4 %}
+{% load static %}
     <table class="table">
         <thead>
         <tr>
@@ -10,17 +11,26 @@
             <th>Ценность задачи</th>
             <th>Сделать до:</th>
         </tr>
-        </thead>
+        </thead><p></p>
+
+    <p>{{now|date:"d.M.Y.D"}}</p>Всего задач:
         {% if user.is_authenticated %}
             {% for tab in tabs %}
                 <tbody>
+
+                {% if forloop.last %}  {{ forloop.counter}}{% endif %}
                 <tr class="{% cycle 'table-success' 'table-info' %}">
-                    <td>{{ tab.created }}</td>
+                    <td>{{ tab.created|date:"d.M.Y.D" }}</td>
                     <td>{{ tab.type_tender }}</td>
-                    <td><a class="nav-link text-danger " href="/admin/tender/tab/">{{ tab.staffer }}</a></td>
+                    <td><img src="{{ tab.staffer.profile_pic.url }}"></td>
                     <td>{{ tab.task_info }}</td>
                     <td>{{ tab.profit_info }}</td>
-                    <td>{{ tab.data2 }}</td>
+
+                    <td class="nav-link text-danger">{{ tab.data2|date:"d.M.Y.D" }}</td>
+
+
+
+
                 </tr>{% endfor %}
         {% else %}
         <td>Авторизуйтесь</td>

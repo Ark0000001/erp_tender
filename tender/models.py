@@ -132,6 +132,7 @@ class Filial(models.Model):
 
 class Staffer(models.Model):
     name = models.CharField(unique=True,max_length=200, verbose_name='Фамилия сотрудника')
+    profile_pic = models.ImageField(null=True, blank=True, upload_to="images/profile/")
 
     def __str__(self):
         return str(self.name)
