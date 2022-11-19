@@ -1,33 +1,37 @@
 {% block task %}
-{% load bootstrap4 %}
-{% load static %}
+
+  <div style="overflow:scroll;">
     <table class="table">
         <thead>
         <tr>
-            <th>Дата и время создания</th>
-            <th>Тип задачи (конкурса)</th>
+
             <th>Отв. сотрудник</th>
             <th>Описание задачи</th>
-            <th>Ценность задачи</th>
             <th>Сделать до:</th>
+            <th>Ценность задачи</th>
+            <th>Дата и время создания</th>
+            <th>Тип задачи (конкурса)</th>
+
         </tr>
         </thead><p></p>
 
-    <p>{{now|date:"d.M.Y.D"}}</p>Всего задач:
+<p style="padding-left:15px;">Всего задач: {% for tab in tabs %}{% if forloop.last %}  {{ forloop.counter}}{% endif %}{% endfor %}</p>
         {% if user.is_authenticated %}
             {% for tab in tabs %}
                 <tbody>
 
-                {% if forloop.last %}  {{ forloop.counter}}{% endif %}
-                <tr class="{% cycle 'table-success' 'table-info' %}">
-                    <td>{{ tab.created|date:"d.M.Y.D" }}</td>
-                    <td>{{ tab.type_tender }}</td>
-                    <td><img src="{{ tab.staffer.profile_pic.url }}"></td>
-                    <td>{{ tab.task_info }}</td>
+
+                <tr class="{% cycle 'bg-light' 'bg-white' %}">
+
+                    <td><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"></td>
+                    <td ><a href="/admin/tender/tab/{{ tab.id }}/change">{{ tab.task_info|truncatechars:100  }} Далее</a></td>
+
+
+                    <td class="nav-link text-danger">{{ tab.data2|date:"d.m.Y.D" }}</td>
+
                     <td>{{ tab.profit_info }}</td>
-
-                    <td class="nav-link text-danger">{{ tab.data2|date:"d.M.Y.D" }}</td>
-
+ <td>{{ tab.created|date:"d.M.Y.D" }}</td>
+                    <td>{{ tab.type_tender }}</td>
 
 
 
@@ -42,6 +46,6 @@
         </tbody>{% endif %}
     </table>
 
-
+</div>
 
 {% endblock task %}

@@ -61,11 +61,11 @@ class Company(models.Model):
 
 class Organizations(models.Model):
     name = models.CharField(max_length=200, verbose_name='Юридические лица')
-    inn = models.CharField(max_length=50, verbose_name='ИНН')
-    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, verbose_name='Контрагент')
+    inn = models.CharField(max_length=50, null=True, blank=True, verbose_name='ИНН')
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Контрагент')
 
     def __str__(self):
-        return f'{(self.name)}, Контрагент: {self.company}'
+        return f'{(self.name)}, Контрагент: {(self.company)}'
 
     class Meta:
         ordering = ['name']
@@ -74,7 +74,8 @@ class Organizations(models.Model):
 
 
 class Client(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name='Клиент/Заказчик')
+
     inn = models.CharField(max_length=50, verbose_name='ИНН')
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, verbose_name='Город')
 
@@ -102,12 +103,18 @@ class Group_prod(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=200, verbose_name='Наименование')
-    my_id = models.CharField(max_length=50, verbose_name='Артикул', default='0')
+    article = models.CharField(max_length=50, verbose_name='Артикул', default='0')
     price = models.CharField(max_length=10, blank=True, default='0.00', verbose_name='Цена')
-    status = models.CharField(max_length=2, verbose_name='Статус', null=True)
-    ss = models.CharField(max_length=10, blank=True, default='0.00', verbose_name='СС с НДС УЗМК')
-    price2 = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, verbose_name='Цена контракта')
-    group_prod = models.ForeignKey(Group_prod, on_delete=models.SET_NULL, null=True, verbose_name='Товарная группа')
+    status = models.CharField(max_length=2, blank=True, verbose_name='Статус', null=True)
+
+    group_prod = models.CharField(max_length=200, null=True, verbose_name='Товарная группа')
+    data1 = models.DateTimeField(null=True, blank=True, verbose_name='Дата пересчета 1')
+    data2 = models.DateTimeField(null=True, blank=True, verbose_name='Дата пересчета 2')
+    raznica1 = models.IntegerField(null=True, verbose_name='Отклонения 1')
+    raznica2 = models.IntegerField(null=True, verbose_name='Отклонения 2')
+
+
+
 
     def __str__(self):
         return str(self.name)
@@ -212,3 +219,105 @@ class Protection(models.Model):
         ordering = ['data1']
         verbose_name_plural = 'Данные таблицы защиты'
         verbose_name = 'Данные защиты'
+
+
+class DealerTab(models.Model):
+    Y = 'Да'
+    N = 'Нет'
+    NT = 'Не треб.'
+
+    CHOI = ((Y, 'Да'), (N, 'Нет'), (NT, 'Не треб.'),)
+
+    is_active = models.BooleanField(default=False, db_index=True, verbose_name='Не нужен контроль')
+    organizations = models.CharField(max_length=200, null=True, blank=True,verbose_name='Юридические лица')
+
+    inn = models.CharField(max_length=50, null=True, blank=True, verbose_name='ИНН')
+    company = models.CharField(max_length=200, null=True, blank=True, verbose_name='Контрагент')
+    pismo_ur_lic = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Письмо юр. лиц - Да/Нет')
+    dogovor=models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Договор - Да/Нет')
+    dop = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Доп. соглашение - Да/Нет')
+    dogovor_p = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Договор поручительства - Да/Нет')
+    dogovor_v = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Договор выставки - Да/Нет')
+    protokol = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Протокол встреч - Да/Нет')
+    sverka_v_1 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Сверка выставки 1 кв. - Да/Нет')
+    sverka_v_2 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Сверка выставки 2 кв. - Да/Нет')
+    sverka_v_3 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Сверка выставки 3 кв. - Да/Нет')
+    sverka_v_4 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Сверка выставки 4 кв. - Да/Нет')
+    sverka_1 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Сверка 1 кв. - Да/Нет')
+    sverka_2 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Сверка 2 кв. - Да/Нет')
+    sverka_3 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Сверка 3 кв. - Да/Нет')
+    sverka_4 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Сверка 4 кв. - Да/Нет')
+
+    ur_dokument = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Юр. документы - Да/Нет')
+    ur_doc_info = models.TextField(max_length=5000, blank=True, verbose_name='Доп. инфо. к юр. док-ам')
+    task_info = models.TextField(max_length=5000, blank=True, verbose_name='Задачи по таблице дилеров')
+    is_active_tasks = models.BooleanField(default=False, db_index=True, verbose_name='Поставлена задача')
+    reshenie = models.DateTimeField(null=True, blank=True, verbose_name='Срок действия решения (назначение директора)')
+
+    staffer = models.ForeignKey(Staffer, on_delete=models.SET_NULL, null=True, verbose_name='отв. Сотрудник')
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
+
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    def __str__(self):
+        return f'{self.organizations} Контрагент: {self.company}'
+
+    class Meta:
+        ordering = ['company']
+        verbose_name_plural = 'Данные наличия документов юр. лиц'
+        verbose_name = 'Данные юр. лица'
+
+
+class IconsDealers(models.Model):
+    pismo = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    org = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    comp = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    dog = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    dogp = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    dogv = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    dop = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    v1 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    v2 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    v3 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    v4 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    s1 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    s2 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    s3 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    s4 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+
+    urdoc = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    info = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    resh = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    sotr = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+
+class PostavTab(models.Model):
+    is_active = models.BooleanField(default=False, db_index=True, verbose_name='Не нужен контроль')
+    name=models.CharField(max_length=200, verbose_name='Юридические лица')
+    inn = models.CharField(max_length=50, null=True, blank=True, verbose_name='ИНН')
+    dogovor=models.BooleanField(default=False,db_index=True, verbose_name='Договор - Да/Нет')
+
+    dop = models.BooleanField(default=False, db_index=True, verbose_name='Доп. соглашение - Да/Нет')
+
+    sverka_1 = models.BooleanField(default=False, db_index=True, verbose_name='Сверка 1 кв. - Да/Нет')
+    sverka_2 = models.BooleanField(default=False, db_index=True, verbose_name='Сверка 2 кв. - Да/Нет')
+    sverka_3 = models.BooleanField(default=False, db_index=True, verbose_name='Сверка 3 кв. - Да/Нет')
+    sverka_4 = models.BooleanField(default=False, db_index=True, verbose_name='Сверка 4 кв. - Да/Нет')
+    pismo_ur_lic = models.BooleanField(default=False, db_index=True, verbose_name='Письмо юр. лиц - Да/Нет')
+    ur_dokument = models.BooleanField(default=False, db_index=True, verbose_name='Юр. документы - Да/Нет')
+    ur_doc_info = models.TextField(max_length=5000, blank=True, verbose_name='Доп. инфо. к юр. док-ам')
+    reshenie = models.DateTimeField(null=True, blank=True, verbose_name='Срок действия решения (назначение директора)')
+
+    staffer = models.ForeignKey(Staffer, on_delete=models.SET_NULL, null=True, verbose_name='отв. Сотрудник')
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
+
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    def __str__(self):
+        return f'{self.name} Инн: {self.inn}'
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'Данные наличия документов поставщиков'
+        verbose_name = 'Данные поставщика'

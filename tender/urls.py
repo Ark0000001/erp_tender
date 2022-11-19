@@ -7,7 +7,6 @@ from .views import *
 urlpatterns = [
 
     path('', include('django.contrib.auth.urls')),
-
     path('users/register/', Register.as_view(), name='register'),
     path('kal/', Index_Kal, name='kal'),
     path('cit/', Index_Cit, name='cit'),
@@ -20,6 +19,9 @@ urlpatterns = [
     path('ind/pri', pri, name='pri'),
     path('ind/seb', seb, name='seb'),
     path('ind/vyr', vyr, name='vyr'),
-
+    path('ind/nac', nac, name='nac'),
+    path('dealer/', dealerTab, name='dealer'),
+    path('postav/', postavTab, name='postav'),
+    path('pereschet/', prodTab, name='pereschet'),
 
 ]

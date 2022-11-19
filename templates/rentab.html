@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
-{% load bootstrap4 %}
-{% load static %}
+
 {% block content %}
     <p></p>
-    <p class="navbar-brand">Рассчет рентабельности</p>
+    <p class="navbar-brand" style="padding-left:20px;">Рассчет рентабельности (разделитель - точка!)</p>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 
 <form action="add" method="POST" class="text-warning">
@@ -14,7 +13,7 @@
     <input class="form-control" type="submit">
 </form>
 </nav><p></p>
-    <p class="navbar-brand">Рассчет себестоимости</p>
+    <p class="navbar-brand" style="padding-left:20px;">Рассчет себестоимости (разделитель - точка!)</p>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 
 <form action="seb" method="POST" class="text-warning">
@@ -26,7 +25,7 @@
 </form>
 </nav><p></p>
 
-    <p class="navbar-brand">Рассчет прибыли</p>
+    <p class="navbar-brand" style="padding-left:20px;">Рассчет прибыли (разделитель - точка!)</p>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 
 <form action="pri" method="POST" class="text-warning">
@@ -40,7 +39,7 @@
 <p></p>
 
 
-    <p class="navbar-brand">Рассчет выручки</p>
+    <p class="navbar-brand" style="padding-left:20px;">Рассчет выручки (разделитель - точка!)</p>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 
 <form action="vyr" method="POST" class="text-warning">
@@ -48,6 +47,21 @@
 
     Введите себестоимость: <input type="text" class="form-control" name="num1"><br><br>
     Введите рентабельность: <input type="text" class="form-control" name="num2"><br><br>
+    <input class="form-control" type="submit">
+</form>
+</nav>
+
+    <p></p>
+
+
+    <p class="navbar-brand" style="padding-left:20px;">Рассчет наценки (разделитель - точка!)</p>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+<form action="nac" method="POST" class="text-warning">
+    {% csrf_token %}
+
+    Введите выручку: <input type="text" class="form-control" name="num1"><br><br>
+    Введите себестоимость: <input type="text" class="form-control" name="num2"><br><br>
     <input class="form-control" type="submit">
 </form>
 </nav>

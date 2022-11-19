@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% block task %}
+
+        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+        <style type="text/css">
+
+        table{
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+tr{
+  display: table-row;
+}
+
+           td{
+  display: table-cell;
+  text-align: center;
+  border: none;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+
+            th {
+                border: 1px black solid;
+                writing-mode: tb-rl;
+                text-align: center;
+            }
+
+        </style>
+
+        <div style="overflow:scroll;">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Поставщики</th>
+                    <th>ИНН</th>
+
+                    <th>Договор</th>
+
+                    <th>Доп. согл.</th>
+
+                    <th>Сверка 1</th>
+                    <th>Сверка 2</th>
+                    <th>Сверка 2</th>
+                    <th>Сверка 3</th>
+                    <th>Сверка 4</th>
+                    <th>Письмо</th>
+                    <th>Юр. док.</th>
+                    <th>Инфо</th>
+                    <th>Решение</th>
+                    <th>Сотрудник</th>
+
+                </tr>
+                </thead>
+                <p></p>
+
+                <p style="padding-left:15px;">Всего поставщиков:
+                    {% for tab in tabs %}{% if forloop.last %}  {{ forloop.counter }}{% endif %}{% endfor %}</p>
+                {% if user.is_authenticated %}
+                    {% for tab in tabs %}
+                        <tbody>
+                        <tr class="{% cycle 'bg-light' 'bg-white' %}">
+                            <td><a href="/admin/tender/postavtab/{{ tab.id }}/change/">{{ tab.name }}</a></td>
+                            <td><a href="/admin/tender/postavtab/{{ tab.id }}/change/">{{ tab.inn }}</a></td>
+
+                            {% if tab.dogovor %}
+                                <td class="bg-success">ДА</td>
+                            {% else %}
+                                <td class="bg-danger">НЕТ</td>{% endif %}
+
+                            {% if tab.dop %}
+                                <td class="bg-success">ДА</td>
+                            {% else %}
+                                <td class="bg-danger">НЕТ</td>{% endif %}
+
+                            {% if tab.sverka_1 %}
+                                <td class="bg-success">ДА</td>
+                            {% else %}
+                                <td class="bg-danger">НЕТ</td>{% endif %}
+                            {% if tab.sverka_2 %}
+                                <td class="bg-success">ДА</td>
+                            {% else %}
+                                <td class="bg-danger">НЕТ</td>{% endif %}
+                            {% if tab.sverka_3 %}
+                                <td class="bg-success">ДА</td>
+                            {% else %}
+                                <td class="bg-danger">НЕТ</td>{% endif %}
+                            {% if tab.sverka_4 %}
+                                <td class="bg-success">ДА</td>
+                            {% else %}
+                                <td class="bg-danger">НЕТ</td>{% endif %}
+                            {% if tab.pismo_ur_lic %}
+                                <td class="bg-success">ДА</td>
+                            {% else %}
+                                <td class="bg-danger">НЕТ</td>{% endif %}
+                            {% if tab.ur_dokument %}
+                                <td class="bg-success">ДА</td>
+                            {% else %}
+                                <td class="bg-danger">НЕТ</td>{% endif %}
+                            <td>{{ tab.ur_doc_info }}</td>
+                            <td>{{ tab.reshenie }}</td>
+
+                            <td>{{ tab.staffer }}</td>
+
+
+                        </tr>{% endfor %}
+                {% else %}
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+
+                </tbody>{% endif %}
+            </table>
+
+        </div>
+
+
+    {% endblock task %}
+
+
+{% endblock %}
+

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
+    <p style="padding-left:15px;">Всего товара: <strong>{% for tab in tabs %}{% if forloop.last %}{{ forloop.counter }}{% endif %}{% endfor %}</strong></p>
+
+        <p></p>
+    <br>
+<style type="text/css">
+
+        table {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        tr {
+            display: table-row;
+        }
+
+        td {
+            display: table-cell;
+            text-align: right;
+            border: none;
+            border: 1px solid #ccc;
+            vertical-align: middle;
+        }
+
+        th {
+            border: 1px black solid;
+            writing-mode: tb-rl;
+            text-align: right;
+        }
+
+    </style>
+    <div style="overflow:scroll;" >
+        <table class="table">
+            <thead >
+            <tr>
+                <th>Группа</th>
+                <th>Наименование</th>
+                <th>Дата 1</th>
+                <th>Расхождений 1</th>
+                <th>Дата 2</th>
+                <th>Расхождений 2</th>
+
+            </tr>
+            </thead>
+            <p></p>
+
+
+            {% if user.is_authenticated %}
+                {% for tab in tabs %}
+                    <tbody>
+                    <tr class="{% cycle 'bg-light' 'bg-white' %}">
+                    <td width="70px"><a href="/admin/tender/product/{{ tab.id }}/change/">{{ tab.group_prod }}</a></td>
+                        <td width="100px"><a href="/admin/tender/product/{{ tab.id }}/change/">{{ tab.name }}</a></td>
+                      <td width="70px">{{ tab.data1|date:"d.M.Y.D" }}</td>
+                    {% if tab.raznica1 == 0 %}
+                            <td class="bg-success" width="50px">{{ tab.raznica1 }}</td>
+                        {% elif tab.raznica1 < 0 %}
+                            <td class="bg-danger" width="50px">{{ tab.raznica1 }}</td>
+                        {% else %}
+                            <td class="bg-warning" width="50px">{{ tab.raznica1 }}</td>{% endif %}
+                        <td width="70px">{{ tab.data2|date:"d.M.Y.D" }}</td>
+                        {% if tab.raznica2 == 0 %}
+                            <td class="bg-success" width="50px">{{ tab.raznica2 }}</td>
+                        {% elif tab.raznica1 < 0 %}
+                            <td class="bg-danger" width="50px">{{ tab.raznica2 }}</td>
+                        {% else %}
+                            <td class="bg-warning" width="50px">{{ tab.raznica2 }}</td>{% endif %}
+
+                    </tr>{% endfor %}
+            {% else %}
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+
+
+            </tbody>{% endif %}
+        </table>
+    </div>
+
+{% endblock %}
+
