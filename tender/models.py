@@ -113,9 +113,6 @@ class Product(models.Model):
     raznica1 = models.IntegerField(null=True, verbose_name='Отклонения 1')
     raznica2 = models.IntegerField(null=True, verbose_name='Отклонения 2')
 
-
-
-
     def __str__(self):
         return str(self.name)
 

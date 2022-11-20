@@ -22,14 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-2-c50jk+1(_x-_mwo3y%ndp_vyo0vavunob(ff2lw1)5wyz=cq'
-SECRET_KEY = os.getenv('SECRET_KEY_SETTINGS')
 
+SECRET_KEY = os.getenv('SECRET_KEY_SETTINGS')
+TELEGRAM_BOT_API_KEY=os.getenv('TOKEN')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 
 # Application definition
@@ -44,7 +43,6 @@ INSTALLED_APPS = [
     'tender.apps.TenderConfig',
     'import_export',
     'bootstrap4',
-
     'crispy_forms',
 
 ]
