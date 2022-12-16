@@ -1,57 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'pereschet.html' %}
 
-{% block content %}
-
-
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-
-    <p style="padding-left:15px;">Всего товара: <strong>{% for tab in tabs %}{% if forloop.last %}{{ forloop.counter }}{% endif %}{% endfor %}</strong></p>
-
-        <p></p>
-    <br>
-<style type="text/css">
-
-        table {
-            display: table;
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        tr {
-            display: table-row;
-        }
-
-        td {
-            display: table-cell;
-            text-align: right;
-            border: none;
-            border: 1px solid #ccc;
-            vertical-align: middle;
-        }
-
-        th {
-            border: 1px black solid;
-            writing-mode: tb-rl;
-            text-align: right;
-        }
-
-    </style>
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-
-<form action="poisk" method="POST" class="text-white">
-    {% csrf_token %}
-
-    Поиск товара: <input type="text" placeholder="Введите товар" class="form-control" name="tovar"><br><br>
-
-    <input class="form-control" type="submit">
-
-</form>
-</nav>
 {% block otvet %}
-
-
-
-    <div style="overflow:scroll;" >
+<div style="overflow:scroll;" >
         <table class="table">
             <thead >
             <tr>
@@ -102,6 +52,5 @@
 
         </table>
     </div>
-{% endblock otvet %}
-{% endblock %}
 
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from import_export import resources,fields
+from import_export import resources
 from .models import *
 from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ForeignKeyWidget
@@ -12,11 +12,14 @@ from django.contrib.auth.admin import UserAdmin
 from .models import User
 User = get_user_model()
 
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
-# def all_tasks(modeladmin, request,queryset):
-#     for qs in queryset:
-#         print (qs.staffer)
 
+class InfoAdminForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorUploadingWidget())
+    class Meta:
+        model = Info
+        fields = '__all__'
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
@@ -67,6 +70,7 @@ class OrganizationsResource(resources.ModelResource):
 class OrganizationsAdmin(ImportExportModelAdmin):
     list_display = ('name', 'company', 'inn')
     list_display_links = ('name','inn')
+    autocomplete_fields = ['company']
     search_fields = ('name',)
     resource_class = OrganizationsResource
 admin.site.register(Organizations,OrganizationsAdmin)
@@ -93,7 +97,7 @@ class ProductResource(resources.ModelResource):
         model = Product
 class ProductAdmin(ImportExportModelAdmin):
     tmp_storage_class = CacheStorage
-    list_display = ('group_prod','name','article','price', 'status')
+    list_display = ('group_prod','name','article','price', 'status','raznica1','raznica2')
     list_display_links = ('name',)
     search_fields = ('name',)
     resource_class =ProductResource
@@ -113,9 +117,9 @@ admin.site.register(Staffer,StafferAdmin)
 
 from django.forms import CheckboxSelectMultiple
 class TabAdmin(admin.ModelAdmin):
-    formfield_overrides = {
-        models.ManyToManyField: {'group_prod': CheckboxSelectMultiple},
-    }
+    # formfield_overrides = {
+    #     models.ManyToManyField: {'group_prod': CheckboxSelectMultiple},
+    # }
     list_display = ('is_active','data2','staffer','type_tender','task_info','created','number_tender','url_tender','number_scheta','number_zakaza','protection','data1','price1','city','client','group_prod','info','filial','win','price2')
     list_display_links = ('staffer','number_tender','type_tender','client','data2','task_info')
     search_fields = ('staffer__name','client__name','task_info')
@@ -153,6 +157,7 @@ admin.site.register(Tab,TabAdmin)
 class ProtectionAdmin(admin.ModelAdmin):
     list_display = ('city','client','product_info','company','data2')
     list_display_links = ('city','client','product_info','company','data2')
+    autocomplete_fields =['company']
     search_fields = ('client__name','company__name')
 admin.site.register(Protection,ProtectionAdmin)
 
@@ -189,10 +194,44 @@ class PostavResource(resources.ModelResource):
         model = PostavTab
 
 class PostavTabAdmin(ImportExportModelAdmin):
-
-    list_display = ('name','inn','dogovor','dop','sverka_1','sverka_2','sverka_3','sverka_4','pismo_ur_lic','ur_dokument','ur_doc_info','reshenie')
-    list_display_links = ('name','inn')
-    search_fields = ('name',)
+    list_display = (
+    'is_active', 'organizations', 'dogovor', 'dop', 'protokol','sverka_1', 'sverka_2', 'sverka_3', 'sverka_4', 'ur_dokument', 'ur_doc_info')
+    list_display_links = ('organizations',)
+    search_fields = ('organizations',)
     resource_class = PostavResource
 
+    actions = ('complete_tasks', 'incomplete_tasks',)
+
+    def complete_tasks(self, request, queryset):
+        count = queryset.update(is_active=True)
+        self.message_user(request, f'Отметили как завершенные, следующее количество: {count} ')
+
+    complete_tasks.short_description = 'Отметить как завершенные'
+
+    def incomplete_tasks(self, request, queryset):
+        count = queryset.update(is_active=False)
+        self.message_user(request, f'Отметили как незавершенные, следующее количество: {count} ')
+
+    incomplete_tasks.short_description = 'Отметить как незавершенные'
+
 admin.site.register(PostavTab,PostavTabAdmin)
+
+
+class ControlProdResource(resources.ModelResource):
+    class Meta:
+        model = ControlProduct
+class ControlProdAdmin(ImportExportModelAdmin):
+    list_display = ('product','kol','data2','company','staffer')
+    list_display_links = ('product','kol','data2','company','staffer')
+    # autocomplete_fields =['product', 'company']
+    search_fields = ('product__name','company__name')
+    resource_class = ControlProdResource
+
+admin.site.register(ControlProduct,ControlProdAdmin)
+
+class InfoAdmin(admin.ModelAdmin):
+    list_display = ('name','content','text','updated')
+    list_display_links = ('name','content','text','updated')
+    form = InfoAdminForm
+    search_fields = ('name','content','text')
+admin.site.register(Info,InfoAdmin)

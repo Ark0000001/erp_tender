@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for tab in tabs %}
+    <main role="main" class="container">
+
+        <div class="row">
+            <div class="col-md-8 blog-main">
+                <h3 class="pb-3 mb-4 font-italic border-bottom">
+
+                    {{ tab.name|safe }}
+
+                </h3>
+
+                <div class="blog-post">
+                    <h2 class="blog-post-title"> {{ tab.content|safe }}</h2>
+                    <p class="blog-post-meta" style="margin-bottom: 30px;"> {{ tab.updated|date:"d.m.Y.D"|safe }} <a href="#">ARK</a></p>
+
+                    <p>
+                </div>
+            </div>
+
+        </div><!-- /.row -->
+
+    </main>
+{% endfor %}
+
+
+{% endblock %}

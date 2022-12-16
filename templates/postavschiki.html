@@ -1,135 +1,162 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% block task %}
+     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
-        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-        <style type="text/css">
+    <p style="padding-left:15px;">Всего юр. лиц: <strong>{% for tab in tabs %}{% if forloop.last %}{{ forloop.counter }}{% endif %}{% endfor %}</strong></p>
+    <p style="padding-left:15px;">Список задач по таблице поставщиков: </p>
+    {% for task in tasks %}
+{#    {% if task.ur_doc_info %}#}
 
-        table{
-  display: table;
-  width: 100%;
-  border-collapse: collapse;
-}
-tr{
-  display: table-row;
-}
+    <p style="padding-left:60px;" class="{% cycle 'bg-light' 'bg-white' %}">{{ task.organizations }} - <strong>{{ task.task_info }}</strong></p>
+        <p></p>
+{#{% endif %}#}
+{% endfor %}
+    <br>
 
-           td{
-  display: table-cell;
-  text-align: center;
-  border: none;
-  border: 1px solid #ccc;
-  vertical-align: middle;
-}
+<style type="text/css">
 
-            th {
-                border: 1px black solid;
-                writing-mode: tb-rl;
-                text-align: center;
-            }
+        table {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-        </style>
+        tr {
+            display: table-row;
+        }
 
-        <div style="overflow:scroll;">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Поставщики</th>
-                    <th>ИНН</th>
+        td {
+            display: table-cell;
+            text-align: center;
+            border: none;
+            border: 1px solid #ccc;
+            vertical-align: middle;
+        }
 
-                    <th>Договор</th>
+        th {
+            border: 1px black solid;
+            writing-mode: tb-rl;
+            text-align: right;
+        }
 
-                    <th>Доп. согл.</th>
+    </style>
+    <div style="overflow:scroll;" >
+        <table class="table">
+            <thead >
+            <tr>
 
-                    <th>Сверка 1</th>
-                    <th>Сверка 2</th>
-                    <th>Сверка 2</th>
-                    <th>Сверка 3</th>
-                    <th>Сверка 4</th>
-                    <th>Письмо</th>
-                    <th>Юр. док.</th>
-                    <th>Инфо</th>
-                    <th>Решение</th>
-                    <th>Сотрудник</th>
+                <th>Юр. лицо</th>
 
-                </tr>
-                </thead>
-                <p></p>
+                <th>Договор</th>
+                <th>Доп. согл.</th>
 
-                <p style="padding-left:15px;">Всего поставщиков:
-                    {% for tab in tabs %}{% if forloop.last %}  {{ forloop.counter }}{% endif %}{% endfor %}</p>
-                {% if user.is_authenticated %}
-                    {% for tab in tabs %}
-                        <tbody>
-                        <tr class="{% cycle 'bg-light' 'bg-white' %}">
-                            <td><a href="/admin/tender/postavtab/{{ tab.id }}/change/">{{ tab.name }}</a></td>
-                            <td><a href="/admin/tender/postavtab/{{ tab.id }}/change/">{{ tab.inn }}</a></td>
+                <th>Протокол</th>
 
-                            {% if tab.dogovor %}
-                                <td class="bg-success">ДА</td>
-                            {% else %}
-                                <td class="bg-danger">НЕТ</td>{% endif %}
+                <th>Сверка 1</th>
+                <th>Сверка 2</th>
+                <th>Сверка 3</th>
+                <th>Сверка 4</th>
 
-                            {% if tab.dop %}
-                                <td class="bg-success">ДА</td>
-                            {% else %}
-                                <td class="bg-danger">НЕТ</td>{% endif %}
+                <th>Юр. док.</th>
+                <th>Инфо</th>
 
-                            {% if tab.sverka_1 %}
-                                <td class="bg-success">ДА</td>
-                            {% else %}
-                                <td class="bg-danger">НЕТ</td>{% endif %}
-                            {% if tab.sverka_2 %}
-                                <td class="bg-success">ДА</td>
-                            {% else %}
-                                <td class="bg-danger">НЕТ</td>{% endif %}
-                            {% if tab.sverka_3 %}
-                                <td class="bg-success">ДА</td>
-                            {% else %}
-                                <td class="bg-danger">НЕТ</td>{% endif %}
-                            {% if tab.sverka_4 %}
-                                <td class="bg-success">ДА</td>
-                            {% else %}
-                                <td class="bg-danger">НЕТ</td>{% endif %}
-                            {% if tab.pismo_ur_lic %}
-                                <td class="bg-success">ДА</td>
-                            {% else %}
-                                <td class="bg-danger">НЕТ</td>{% endif %}
-                            {% if tab.ur_dokument %}
-                                <td class="bg-success">ДА</td>
-                            {% else %}
-                                <td class="bg-danger">НЕТ</td>{% endif %}
-                            <td>{{ tab.ur_doc_info }}</td>
-                            <td>{{ tab.reshenie }}</td>
+                <th>Сотрудник</th>
 
-                            <td>{{ tab.staffer }}</td>
+            </tr>
+            </thead>
+            <p></p>
 
 
-                        </tr>{% endfor %}
-                {% else %}
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
-                <td>Авторизуйтесь</td>
+            {% if user.is_authenticated %}
+                {% for tab in tabs %}
+                    <tbody>
+                    <tr class="{% cycle 'bg-light' 'bg-white' %}">
 
-                </tbody>{% endif %}
-            </table>
-
-        </div>
+                        <td width="100px"><a href="/admin/tender/postavtab/{{ tab.id }}/change/">{{ tab.organizations }}</a></td>
 
 
-    {% endblock task %}
+                        {% if tab.dogovor == 'Да' %}
+                            <td class="bg-success">ДА</td>
+                        {% elif tab.dogovor == 'Нет' %}
+                            <td class="bg-danger">НЕТ</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ треб.</td>{% endif %}
+
+                        {% if tab.dop == 'Да' %}
+                            <td class="bg-success">ДА</td>
+                        {% elif tab.dop == 'Нет' %}
+                            <td class="bg-danger">НЕТ</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ треб.</td>{% endif %}
+
+
+
+                        {% if tab.protokol == 'Да' %}
+                            <td class="bg-success">ДА</td>
+                        {% elif tab.protokol == 'Нет' %}
+                            <td class="bg-danger">НЕТ</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ треб.</td>{% endif %}
+
+                        {% if tab.sverka_1 == 'Да' %}
+                            <td class="bg-success">ДА</td>
+                        {% elif tab.sverka_1 == 'Нет' %}
+                            <td class="bg-danger">НЕТ</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ треб.</td>{% endif %}
+
+                        {% if tab.sverka_2  == 'Да' %}
+                            <td class="bg-success">ДА</td>
+                        {% elif tab.sverka_2 == 'Нет' %}
+                            <td class="bg-danger">НЕТ</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ треб.</td>{% endif %}
+
+                        {% if tab.sverka_3  == 'Да' %}
+                            <td class="bg-success">ДА</td>
+                        {% elif tab.sverka_3 == 'Нет' %}
+                            <td class="bg-danger">НЕТ</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ треб.</td>{% endif %}
+
+                        {% if tab.sverka_4  == 'Да' %}
+                            <td class="bg-success">ДА</td>
+                        {% elif tab.sverka_4 == 'Нет' %}
+                            <td class="bg-danger">НЕТ</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ треб.</td>{% endif %}
+
+                        {% if tab.ur_dokument  == 'Да' %}
+                            <td class="bg-success">ДА</td>
+                        {% elif tab.ur_dokument == 'Нет' %}
+                            <td class="bg-danger">НЕТ</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ треб.</td>{% endif %}
+
+                        <td width="100px">{{ tab.ur_doc_info }}</td>
+
+                        <td>{{ tab.staffer }}</td>
+
+                    </tr>{% endfor %}
+            {% else %}
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+            <td>Авторизуйтесь</td>
+
+
+            </tbody>{% endif %}
+        </table>
+    </div>
+
 
 
 {% endblock %}
