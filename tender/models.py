@@ -5,6 +5,10 @@ from django.contrib.auth.models import AbstractUser
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
+import uuid
+
+import erp_tender.settings
+
 
 class User(AbstractUser):
     pass
@@ -78,7 +82,7 @@ class Organizations(models.Model):
 class Client(models.Model):
     name = models.CharField(max_length=200, verbose_name='Клиент/Заказчик')
 
-    inn = models.CharField(max_length=50, verbose_name='ИНН')
+    inn = models.CharField(max_length=50, verbose_name='ИНН', unique=True, default=uuid.uuid1)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, verbose_name='Город')
 
     def __str__(self):
@@ -149,50 +153,106 @@ class Staffer(models.Model):
         verbose_name = 'Сотрудник'
 
 
+
+class TenderTab(models.Model):
+    is_active=models.BooleanField(default=False,db_index=True, verbose_name='Завершено?')
+    created = models.DateTimeField('Дата и время создания', default=timezone.now)
+    data_win = models.DateTimeField(null=True, blank=True, verbose_name='Дата победы')
+    price1 = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True, verbose_name='Цена договора')
+    name_project = models.CharField(max_length=200, blank=True, verbose_name='Имя проекта')
+    task_info = models.TextField(max_length=5000, blank=True, verbose_name='Описание проекта')
+    economic = models.TextField(max_length=5000, blank=True, verbose_name='Экономика проекта')
+    comment_info = models.TextField(max_length=5000, blank=True, verbose_name='Комментарий - ход событий')
+    data_dog = models.DateTimeField(null=True, blank=True, verbose_name='Дата договора')
+
+    type_tender = models.ForeignKey(Type_tender, on_delete=models.SET_NULL, blank=True, null=True,
+                                    verbose_name='Тип проекта')
+
+
+    srok_postavki = models.DateTimeField(verbose_name='Срок поставки до:')
+    penya = models.CharField(max_length=20, blank=True, verbose_name='Пеня за день просрочки:')
+
+
+    staffer = models.ForeignKey(Staffer, on_delete=models.SET_NULL, null=True, verbose_name='отв. Сотрудник')
+    number_scheta = models.CharField(max_length=50, blank=True, verbose_name='Номер счета')
+    number_zakaza = models.CharField(max_length=50, blank=True, verbose_name='Номер заказа')
+
+    number_tender = models.CharField(max_length=1000, blank=True, verbose_name='Номер тендера или ссылка')
+
+    url_tender = models.CharField(max_length=1000, blank=True, verbose_name='Ссылка на папку с проектом')
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
+
+    updated = models.DateTimeField(auto_now=True)
+
+
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город поставки')
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Заказчик')
+    info_client = models.CharField(max_length=200, blank=True, verbose_name='Контакты заказчика')
+
+
+    group_prod = models.ForeignKey(Group_prod, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Товарная группа')
+
+    info = models.CharField(max_length=200, blank=True, verbose_name='Примечание к товарным группам')
+    filial = models.ForeignKey(Filial, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Филиал от кого?')
+
+
+
+    def __str__(self):
+        return f'№{self.id}, {self.name_project}'
+
+    class Meta:
+        ordering = ['data_win']
+        verbose_name_plural = 'Проекты/тендера'
+        verbose_name = 'Проект/тендер'
+
+
+
 class Tab(models.Model):
     is_active=models.BooleanField(default=False,db_index=True, verbose_name='Завершено?')
     # YES='Да'
     # NO='Нет'
     # CHOICES = [(YES, 'Да'), (NO, 'Нет'),]
     # protection = models.CharField(max_length=3, choices=CHOICES, default=YES,verbose_name='Защита')
-
-    task_info = models.TextField(max_length=5000, blank=True, verbose_name='Описание задачи')
     profit_info = models.CharField(max_length=200, blank=True,
                                    verbose_name='Имя задачи')
+    task_info = models.TextField(max_length=5000, blank=True, verbose_name='Описание задачи')
+    project = models.ForeignKey(TenderTab, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Проект')
+
     data2 = models.DateTimeField(verbose_name='Сделать до:')
     staffer = models.ForeignKey(Staffer, on_delete=models.SET_NULL, null=True, verbose_name='отв. Сотрудник')
-    type_tender = models.ForeignKey(Type_tender, on_delete=models.SET_NULL, blank=True,null=True,verbose_name='Тип задачи (конкурса)')
-    protection = models.ForeignKey(Company, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Защита')
+    type_tender = models.ForeignKey(Type_tender, on_delete=models.SET_NULL, blank=True,null=True,verbose_name='Тип задачи (конкурса)', editable=False)
+    protection = models.ForeignKey(Company, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Защита', editable=False)
     created = models.DateTimeField('Дата и время создания', default=timezone.now)
     F = 'Филиал'
     D = 'Дилер'
     N = 'Другой'
     Net = 'Нет'
     CHOI = [(F, 'Филиал'), (D, 'Дилер'), (N, 'Другой'), (Net, 'Нет'), ]
-    win = models.CharField(max_length=6, choices=CHOI, blank=True, null=True, default=F, verbose_name='Победитель')
+    win = models.CharField(max_length=6, choices=CHOI, blank=True, null=True, default=F, verbose_name='Победитель', editable=False)
 
-    number_tender = models.CharField(max_length=50, blank=True, verbose_name='Номер тендера или ссылка')
-    number_zakaza = models.CharField(max_length=50, blank=True, verbose_name='Номер заказа')
-    number_scheta = models.CharField(max_length=50, blank=True, verbose_name='Номер счета')
+    number_tender = models.CharField(max_length=50, blank=True, verbose_name='Номер тендера или ссылка', editable=False)
+    number_zakaza = models.CharField(max_length=50, blank=True, verbose_name='Номер заказа', editable=False)
+    number_scheta = models.CharField(max_length=50, blank=True, verbose_name='Номер счета', editable=False)
 
-    url_tender = models.CharField(max_length=50, blank=True, verbose_name='Ссылка на папку с задачей')
+    url_tender = models.CharField(max_length=50, blank=True, verbose_name='Ссылка на папку с задачей', editable=False)
 
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
 
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+    updated = models.DateTimeField(auto_now=True)
 
 
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город')
-    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Заказчик')
-    price1 = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True, verbose_name='Начальная цена')
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город', editable=False)
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Заказчик', editable=False)
+    price1 = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True, verbose_name='Начальная цена', editable=False)
 
     data1 = models.DateTimeField(null=True, blank=True, verbose_name='Дата начала')
 
-    group_prod = models.ForeignKey(Group_prod, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Товарная группа')
+    group_prod = models.ForeignKey(Group_prod, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Товарная группа', editable=False)
 
-    info = models.CharField(max_length=200, blank=True, verbose_name='Примечание к товарным группам')
-    filial = models.ForeignKey(Filial, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Филиал')
-    price2 = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, verbose_name='Цена контракта')
+    info = models.CharField(max_length=200, blank=True, verbose_name='Примечание к товарным группам', editable=False)
+    filial = models.ForeignKey(Filial, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Филиал', editable=False)
+    price2 = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, verbose_name='Цена контракта', editable=False)
 
 
     def __str__(self):
@@ -291,6 +351,9 @@ class IconsDealers(models.Model):
     resh = models.ImageField(null=True, blank=True, upload_to="images/profile/")
     sotr = models.ImageField(null=True, blank=True, upload_to="images/profile/")
 
+
+
+from datetime import datetime, timedelta
 class PostavTab(models.Model):
     Y = 'Да'
     N = 'Нет'
@@ -306,6 +369,19 @@ class PostavTab(models.Model):
 
     dogovor = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет',
                                verbose_name='Договор - Да/Нет')
+
+
+    date_dogovor = models.DateField(null=True, blank=True, verbose_name='Дата договора')
+
+    SROK_DOGOVOR = models.TextField(max_length=5000, blank=True, verbose_name='Срок хранения договора', default='365')
+
+    @property
+    def is_past_due(self):
+        if not self.date_dogovor:
+            return 'no'
+        return (self.date_dogovor + timedelta(days=365) < timezone.now().date())
+
+
     dop = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет',
                            verbose_name='Доп. соглашение - Да/Нет')
 
@@ -371,16 +447,22 @@ class ControlProduct(models.Model):
 
 
 class Info(models.Model):
-    name = models.CharField(max_length=200, verbose_name='Наименование')
+    name = models.CharField(max_length=200,blank=True,null=True, verbose_name='Наименование')
+    created = models.DateTimeField('Дата и время создания', default=timezone.now)
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
     content = models.TextField(null=True,blank=True, verbose_name='Статьи')
 
-    text = models.TextField(max_length=100000, blank=True, verbose_name='Полезная информация')
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    text = models.TextField(max_length=100000,null=True, blank=True, verbose_name='Полезная информация')
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.author)
 
     class Meta:
         ordering = ['-updated']
         verbose_name_plural = 'Полезные информации'
         verbose_name = 'Полезная информация'
+
+

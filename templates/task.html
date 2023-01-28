@@ -1,37 +1,56 @@
 {% block task %}
 
+
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+<form action="{% url 'poisk_tasks' %}" method="POST" class="text-white">
+    {% csrf_token %}
+
+    Поиск задачи: <input type="text" placeholder="Введите запрос" class="form-control" name="task_info"><br><br>
+
+    <input class="form-control" type="submit">
+
+</form>
+</nav>
+
+
   <div style="overflow:scroll;">
     <table class="table">
         <thead>
-        <tr>
+        <tr align="center">
 
             <th>Отв. сотрудник</th>
+
             <th>Описание задачи</th>
-            <th>Сделать до:</th>
-            <th>Ценность задачи</th>
-            <th>Дата и время создания</th>
-            <th>Тип задачи (конкурса)</th>
+            <th>Проект</th>
+{#            <th>Сделать до:</th>#}
+{#            <th>Имя задачи</th>#}
+{#            <th>Дата и время создания</th>#}
+{#            <th>Тип задачи (конкурса)</th>#}
 
         </tr>
         </thead><p></p>
+{% if user.is_authenticated %}
+<p style="padding-left:15px;">Всего задач: {% for tab in tabs %}{% if forloop.last %}  <font color="cc0000">{{ forloop.counter}}</font>{% endif %}{% endfor %}</p>
 
-<p style="padding-left:15px;">Всего задач: {% for tab in tabs %}{% if forloop.last %}  {{ forloop.counter}}{% endif %}{% endfor %}</p>
-        {% if user.is_authenticated %}
+
+
             {% for tab in tabs %}
                 <tbody>
 
 
                 <tr class="{% cycle 'bg-light' 'bg-white' %}">
 
-                    <td><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"></td>
-                    <td ><a href="/admin/tender/tab/{{ tab.id }}/change">{{ tab.task_info|truncatechars:100  }} Далее</a></td>
+                      <td align="center"><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"><br>Сделать до:<br><font size="2" color="cc0000">{{ tab.data2|date:"d.m.Y" }}</font></td>
 
 
-                    <td class="nav-link text-danger">{{ tab.data2|date:"d.m.Y.D" }}</td>
-
-                    <td>{{ tab.profit_info }}</td>
- <td>{{ tab.created|date:"d.M.Y.D" }}</td>
-                    <td>{{ tab.type_tender }}</td>
+                     <td ><a href="/admin/tender/tab/{{ tab.id }}/change">№{{ tab.id }} - имя: {{ tab.profit_info }} <br> Описание: {{ tab.task_info|truncatechars:100  }} Далее</a></td>
+ <td width="15%"><a href="/admin/tender/tendertab/{{ tab.project_id }}/change">{{ tab.project }}</a></td>
+{#                    <td class="nav-link text-danger">{{ tab.data2|date:"d.m.Y" }}</td>#}
+{#                    <td>{{ tab.profit_info }}</td>#}
+{#                    <td>{{ tab.created|date:"d.M.Y.D" }}</td>#}
+{#                    <td>{{ tab.type_tender }}</td>#}
 
 
 
@@ -39,10 +58,11 @@
         {% else %}
         <td>Авторизуйтесь</td>
         <td>Авторизуйтесь</td>
+    <td>Авторизуйтесь</td>
         <td>Авторизуйтесь</td>
-        <td>Авторизуйтесь</td>
-        <td>Авторизуйтесь</td>
-        <td>Авторизуйтесь</td>
+{#        <td>Авторизуйтесь</td>#}
+{#        <td>Авторизуйтесь</td>#}
+{#        <td>Авторизуйтесь</td>#}
         </tbody>{% endif %}
     </table>
 

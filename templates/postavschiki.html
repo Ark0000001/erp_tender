@@ -75,14 +75,14 @@
 
                         <td width="100px"><a href="/admin/tender/postavtab/{{ tab.id }}/change/">{{ tab.organizations }}</a></td>
 
-
+{#{% if tab.is_past_due < now.date %}#}
                         {% if tab.dogovor == 'Да' %}
                             <td class="bg-success">ДА</td>
                         {% elif tab.dogovor == 'Нет' %}
                             <td class="bg-danger">НЕТ</td>
                         {% else %}
-                            <td class="bg-warning">НЕ треб.</td>{% endif %}
-
+                            <td class="bg-warning">НЕ треб.</td>
+{% endif %}
                         {% if tab.dop == 'Да' %}
                             <td class="bg-success">ДА</td>
                         {% elif tab.dop == 'Нет' %}

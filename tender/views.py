@@ -1,5 +1,5 @@
 
-from .models import Tab, DealerTab,IconsDealers,PostavTab, Product,ControlProduct, Info
+from .models import Tab, DealerTab,IconsDealers,PostavTab, Product,ControlProduct, Info,TenderTab
 
 from django.contrib.auth import authenticate, login
 from django.views import View
@@ -57,6 +57,13 @@ def Index_Mur(request):
     context = {'tabs': tabs,'now': datetime.datetime.now()}
     return render(request, 'mur.html', context)
 
+def Index_Pel(request):
+
+    tabs = Tab.objects.filter(is_active=False, staffer__name__istartswith='Пелых').order_by('data2')
+    context = {'tabs': tabs,'now': datetime.datetime.now()}
+    return render(request, 'pel.html', context)
+
+
 def Index_Skor(request):
     tabs = Tab.objects.filter(is_active=False, staffer__name__istartswith='Скоробогатая').order_by('data2')
     context = {'tabs': tabs,'now': datetime.datetime.now()}
@@ -88,10 +95,12 @@ def addition(request):
     num1 = request.POST['num1'].replace(',','.')
     num2 = request.POST['num2'].replace(',','.')
     num3 = request.POST['num3'].replace(',','.')
+    num666 = request.POST['num666'].replace(',', '.')
 
-    if is_number(num1) and is_number(num2) and is_number(num3):
+
+    if is_number(num1) and is_number(num2) and is_number(num3)and is_number(num666):
         v = float(num1)
-        s = float(num2)
+        s = float(num2)+float(num666)
         r = float(num3)
 
         if r>0 and v>0:
@@ -121,7 +130,7 @@ def addition(request):
             vyr1 = s/(1-r/100)
             vyr=f"Выручка = {vyr1:.2f}"
         else:
-            vyr = f"Выручка = нет данных"
+            vyr = f"Выручка = {v:.2f}"
 
         if v > 0 and s > 0:
             nac1 = v*100/s-100
@@ -138,7 +147,7 @@ def addition(request):
         else:
             nac = f"Наценка = нет данных"
 
-        context={"num1": num1 ,"num2": num2 ,"num3": num3 ,"pri": pri , "rent": rent, "ss": ss, "vyr": vyr, "nac": nac }
+        context={"num1": num1 ,"num2": num2 ,"num3": num3 ,"pri": pri , "rent": rent, "ss": ss, "vyr": vyr, "nac": nac, "num666":num666 }
         return render(request, "result.html", context)
     else:
         pri = "Не корректно введены данные"
@@ -146,7 +155,7 @@ def addition(request):
         ss = "Не корректно введены данные"
         vyr = "Не корректно введены данные"
         nac = "Не корректно введены данные"
-        context = {"num1": num1 ,"num2": num2 ,"num3": num3 ,"pri": pri , "rent": rent, "ss": ss, "vyr": vyr, "nac": nac }
+        context = {"num1": num1 ,"num2": num2 ,"num3": num3 ,"pri": pri , "rent": rent, "ss": ss, "vyr": vyr, "nac": nac, "num666":num666 }
         return render(request, "result.html", context)
 
 # def pri(request):
@@ -232,6 +241,12 @@ def dealerTab(request):
 
 def postavTab(request):
     # icond=IconsDealers.objects.all()
+    # a=datetime.date.today()
+    # bb = datetime.timedelta(days=int(PostavTab)))
+    # cc=a+bb
+    # srok=cc-a
+
+
     tasks = PostavTab.objects.filter(is_active_tasks=True).order_by('task_info')
     tabs = PostavTab.objects.filter(is_active=False).order_by('organizations')
     context = {'tabs': tabs,'tasks':tasks,'now': datetime.datetime.now()}
@@ -270,7 +285,14 @@ def info(request):
 def poisk_tasks(request):
 
     num1 = request.POST['task_info']
-    tabs = Tab.objects.filter(is_active=False).filter(Q(task_info__icontains=num1)).order_by('data2')
+    tabs = Tab.objects.filter(is_active=False).filter(Q(task_info__icontains=num1) | Q(id__icontains=num1) | Q(profit_info__icontains=num1)).order_by('data2')
 
     context = {"tabs": tabs }
     return render(request, "poisk_tasks.html", context)
+
+
+def tenderTab(request):
+    tabs = TenderTab.objects.filter(is_active=False).order_by('data_win')
+    tasks=Tab.objects.filter(is_active=False).order_by('data2')
+    context = {'tabs': tabs,'tasks': tasks,'now': datetime.datetime.now()}
+    return render(request, 'tender.html', context)

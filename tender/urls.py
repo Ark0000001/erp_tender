@@ -12,6 +12,7 @@ urlpatterns = [
     path('kal/', Index_Kal, name='kal'),
     path('cit/', Index_Cit, name='cit'),
     path('mur/', Index_Mur, name='mur'),
+    path('pel/', Index_Pel, name='pel'),
     path('skor/', Index_Skor, name='skor'),
     path('mir/', Index_Mir, name='mir'),
     path('evt/', Index_Evt, name='evt'),
@@ -28,6 +29,7 @@ urlpatterns = [
     path('pereschet/poisk', poisk, name='poisk'),
     path('info/',info, name='info'),
     path('poisk_tasks', poisk_tasks, name='poisk_tasks'),
+    path('tender/', tenderTab, name='tender'),
 
 
 ]

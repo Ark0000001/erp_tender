@@ -120,7 +120,7 @@ class TabAdmin(admin.ModelAdmin):
     # formfield_overrides = {
     #     models.ManyToManyField: {'group_prod': CheckboxSelectMultiple},
     # }
-    list_display = ('is_active','data2','staffer','type_tender','task_info','created','number_tender','url_tender','number_scheta','number_zakaza','protection','data1','price1','city','client','group_prod','info','filial','win','price2')
+    list_display = ('updated','is_active','data2','staffer','type_tender','task_info','created','number_tender','url_tender','number_scheta','number_zakaza','protection','data1','price1','city','client','group_prod','info','filial','win','price2')
     list_display_links = ('staffer','number_tender','type_tender','client','data2','task_info')
     search_fields = ('staffer__name','client__name','task_info')
     actions = ('complete_tasks', 'incomplete_tasks',)
@@ -230,8 +230,57 @@ class ControlProdAdmin(ImportExportModelAdmin):
 admin.site.register(ControlProduct,ControlProdAdmin)
 
 class InfoAdmin(admin.ModelAdmin):
-    list_display = ('name','content','text','updated')
+    list_display = ('name','created','author','content','text','updated')
     list_display_links = ('name','content','text','updated')
     form = InfoAdminForm
     search_fields = ('name','content','text')
+
+    def get_form(self,request,obj=None,**kwargs):
+        form=super(InfoAdmin,self).get_form(request,obj,**kwargs)
+        form.base_fields['author'].initial=request.user
+
+        if str(request.user)!='admin':
+            form.base_fields['author'].disabled = request.user
+
+
+
+        if request.user.groups.filter(name='MyGroup').exists():
+            self.exclude=('created',)
+
+        return form
+
 admin.site.register(Info,InfoAdmin)
+
+
+class TenderTabAdmin(admin.ModelAdmin):
+
+    list_display = ('is_active','name_project','price1','data_win','comment_info','staffer','srok_postavki','type_tender','task_info','created','number_tender','url_tender','number_scheta','number_zakaza','city','client','info_client','group_prod','info','filial','economic')
+    list_display_links = ('staffer','name_project','staffer','client','data_win','task_info')
+    search_fields = ('staffer__name','name_project','client__name','task_info')
+    actions = ('complete_tasks', 'incomplete_tasks',)
+
+    def complete_tasks(self, request, queryset):
+        count = queryset.update(is_active=True)
+        self.message_user(request, f'Отметили как завершенные, следующее количество: {count} ')
+
+    complete_tasks.short_description = 'Отметить как завершенные'
+
+    def incomplete_tasks(self, request, queryset):
+        count = queryset.update(is_active=False)
+        self.message_user(request, f'Отметили как незавершенные, следующее количество: {count} ')
+
+    incomplete_tasks.short_description = 'Отметить как незавершенные'
+
+    def get_form(self,request,obj=None,**kwargs):
+        form=super(TenderTabAdmin,self).get_form(request,obj,**kwargs)
+        form.base_fields['author'].initial=request.user
+
+        if str(request.user)!='admin':
+            form.base_fields['author'].disabled = request.user
+
+        if request.user.groups.filter(name='MyGroup').exists():
+            self.exclude=('created',)
+
+        return form
+
+admin.site.register(TenderTab,TenderTabAdmin)

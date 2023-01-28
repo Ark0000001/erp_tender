@@ -8,15 +8,14 @@
             <div class="col-md-8 blog-main">
                 <h3 class="pb-3 mb-4 font-italic border-bottom">
 
-                    {{ tab.name|safe }}
+                    <a href="/admin/tender/info/{{ tab.id }}/change">{{ tab.content|safe }}</a>
 
                 </h3>
 
                 <div class="blog-post">
-                    <h2 class="blog-post-title"> {{ tab.content|safe }}</h2>
-                    <p class="blog-post-meta" style="margin-bottom: 30px;"> {{ tab.updated|date:"d.m.Y.D"|safe }} <a href="#">ARK</a></p>
 
-                    <p>
+                    <p class="blog-post-meta" style="margin-bottom: 30px;"> {{ tab.created|date:"d.m.Y"|safe }}</p>
+
                 </div>
             </div>
 
