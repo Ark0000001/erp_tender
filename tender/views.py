@@ -7,9 +7,14 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from .forms import UserCreationForm
 import logging
-
-
+from django.core.management import call_command
+import datetime
 logger=logging.getLogger('main')
+
+
+def trial(request):
+    call_command('dbbackup')
+    return print('db created! - ')
 
 class Register(View):
     template_name = 'registration/register.html'
@@ -34,7 +39,7 @@ class Register(View):
             'form': form
         }
         return render(request, self.template_name, context)
-import datetime
+
 def Index(request):
     tabs = Tab.objects.filter(is_active=False).order_by('data2')
     context = {'tabs': tabs,'now': datetime.datetime.now()}
@@ -296,3 +301,4 @@ def tenderTab(request):
     tasks=Tab.objects.filter(is_active=False).order_by('data2')
     context = {'tabs': tabs,'tasks': tasks,'now': datetime.datetime.now()}
     return render(request, 'tender.html', context)
+
