@@ -3,7 +3,7 @@
 {% block content %}
      <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
-    <p style="padding-left:15px;">Всего юр. лиц: <strong>{% for tab in tabs %}{% if forloop.last %}{{ forloop.counter }}{% endif %}{% endfor %}</strong></p>
+    <p style="padding-left:15px;">Всего юр. лиц: <strong>{% for tab in tabs %}{% if forloop.last %}<font color="cc0000">{{ forloop.counter }}</font>{% endif %}{% endfor %}</strong></p>
     <p style="padding-left:15px;">Список задач по таблице поставщиков: </p>
     {% for task in tasks %}
 {#    {% if task.ur_doc_info %}#}
@@ -57,7 +57,7 @@
                 <th>Сверка 2</th>
                 <th>Сверка 3</th>
                 <th>Сверка 4</th>
-
+                <th>Годовая сверка</th>
                 <th>Юр. док.</th>
                 <th>Инфо</th>
 
@@ -73,27 +73,28 @@
                     <tbody>
                     <tr class="{% cycle 'bg-light' 'bg-white' %}">
 
-                        <td width="100px"><a href="/admin/tender/postavtab/{{ tab.id }}/change/">{{ tab.organizations }}</a></td>
+                        <td width="100px"><a href="/admin/tender/postavtab/{{ tab.id }}/change/">{{ tab.organizations }}
+                            <br><font color="cc0000">Услуги: {{ tab.uslugi_vidy|truncatechars:100 }}</font></a></td>
 
 {#{% if tab.is_past_due < now.date %}#}
                         {% if tab.dogovor == 'Да' %}
-                            <td class="bg-success">ДА</td>
+                            <td class="bg-success">Номер договора: {{ tab.nomer_dogovor }}<br>{{ tab.date_dogovor|date:"d.m.Y" }}<br>До: {{ tab.date_do_dogovor|date:"d.m.Y" }}</td>
+                        {% elif tab.dogovor == '1Пролонг.' %}
+                            <td class="bg-success">{{ tab.date_dogovor|date:"d.m.Y" }}</td>
                         {% elif tab.dogovor == 'Нет' %}
                             <td class="bg-danger">НЕТ</td>
                         {% else %}
                             <td class="bg-warning">НЕ треб.</td>
 {% endif %}
                         {% if tab.dop == 'Да' %}
-                            <td class="bg-success">ДА</td>
+                            <td class="bg-success">{{ tab.date_dop|date:"d.m.Y" }}</td>
                         {% elif tab.dop == 'Нет' %}
                             <td class="bg-danger">НЕТ</td>
                         {% else %}
                             <td class="bg-warning">НЕ треб.</td>{% endif %}
 
-
-
                         {% if tab.protokol == 'Да' %}
-                            <td class="bg-success">ДА</td>
+                            <td class="bg-success">{{ tab.date_protokol|date:"d.m.Y" }}</td>
                         {% elif tab.protokol == 'Нет' %}
                             <td class="bg-danger">НЕТ</td>
                         {% else %}
@@ -127,6 +128,13 @@
                         {% else %}
                             <td class="bg-warning">НЕ треб.</td>{% endif %}
 
+                    {% if tab.sverka_god  == 'Да' %}
+                            <td class="bg-success">ДА</td>
+                        {% elif tab.sverka_god == 'Нет' %}
+                            <td class="bg-danger">НЕТ</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ треб.</td>{% endif %}
+
                         {% if tab.ur_dokument  == 'Да' %}
                             <td class="bg-success">ДА</td>
                         {% elif tab.ur_dokument == 'Нет' %}
@@ -140,6 +148,7 @@
 
                     </tr>{% endfor %}
             {% else %}
+            <td>Авторизуйтесь</td>
             <td>Авторизуйтесь</td>
             <td>Авторизуйтесь</td>
             <td>Авторизуйтесь</td>

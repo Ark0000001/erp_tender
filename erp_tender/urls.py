@@ -18,7 +18,7 @@ urlpatterns = [
 
     path('users/', include('tender.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-admin.site.site_header = '«Административная часть менеджера задач. - Хвала и почет ВЕЛИКОМУ ARK!»'
+admin.site.site_header = '«Административная часть менеджера задач. Хвала и почет ВЕЛИКОМУ ARK!»'
 
 admin.site.site_title = 'Админка'
 

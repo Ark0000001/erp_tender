@@ -3,13 +3,15 @@
 {% block otvet %}
     <p></p>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <h1 class="navbar-brand text-white" style="margin-bottom: 30px;">Вводные данные:<br>
-            <br>Выручка - {{ num1 }}
-            <br>Себестоимость - {{ num2 }}
-            <br>Доп. затраты - {{ num666 }}
-            <br>Рентабельность - {{ num3 }}</h1>
+        <h1 class="navbar-brand text-white" style="margin-bottom: 30px;">Вводные данные<br><br>
+            <br>Выручка: {{ num1 }}
+            <br>Себестоимость: {{ num2 }}
+            <br>Доп. затраты: {{ num666 }}
+            <br>Рентабельность: {{ num3 }}</h1>
             <h1 class="navbar-brand text-warning" style="margin-bottom: 30px;">Результат:<br>
-            <br>{{ pri }}
+            <br>
+                {{ pri }}
+
             <br>{{ rent }}
             <br>{{ ss }}, доп. затраты: {{ num666 }}
             <br>{{ vyr }}

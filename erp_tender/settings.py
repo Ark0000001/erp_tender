@@ -19,6 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY_SETTINGS')
 TELEGRAM_BOT_API_KEY=os.getenv('TOKEN')
+KEY_OPENAI=os.getenv('TOKEN_OPENAI')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
