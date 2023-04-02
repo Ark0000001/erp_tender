@@ -1,0 +1,18 @@
+{% extends 'peny.html' %}
+
+{% block otvet %}
+    <p></p>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <h1 class="navbar-brand text-white" style="margin-bottom: 30px;">Вводные данные<br><br>
+            <br>Сумма просрочки: {{ num1 }}
+            <br>Количество дней: {{ num2 }}
+            <br>Ставка (ключевая/рефинансирования): {{ num3 }}%
+           </h1>
+            <h1 class="navbar-brand text-warning" style="margin-bottom: 30px;">Сумма неустойки за все дни ({{ num2 }}):<br>
+            <br>{{ peny }}
+            </h1>
+
+    </nav>
+
+
+{% endblock %}

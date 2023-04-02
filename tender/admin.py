@@ -2,14 +2,14 @@ from django.contrib import admin
 
 # Register your models here.
 from import_export import resources
-from .models import *
+# from .models import *
 from import_export.admin import ImportExportModelAdmin
-from import_export.widgets import ForeignKeyWidget
+# from import_export.widgets import ForeignKeyWidget
 from .forms import *
 from import_export.tmp_storages import CacheStorage
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from .models import User
+# from .models import User
 User = get_user_model()
 
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
@@ -115,7 +115,7 @@ class StafferAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 admin.site.register(Staffer,StafferAdmin)
 
-from django.forms import CheckboxSelectMultiple
+# from django.forms import CheckboxSelectMultiple
 class TabAdmin(admin.ModelAdmin):
     # formfield_overrides = {
     #     models.ManyToManyField: {'group_prod': CheckboxSelectMultiple},
@@ -284,3 +284,36 @@ class TenderTabAdmin(admin.ModelAdmin):
         return form
 
 admin.site.register(TenderTab,TenderTabAdmin)
+
+class GruzAdmin(admin.ModelAdmin):
+
+    list_display = ('is_active','name_gruz','data_gruz','schet','price_schet','data_schet','city_1','city_2','info_map','to','data_to','miks','author','staffer','updated')
+    list_display_links = ('name_gruz','data_gruz','schet','price_schet')
+    search_fields = ('name_gruz','city_1','city_2')
+    actions = ('complete_tasks', 'incomplete_tasks',)
+
+    def complete_tasks(self, request, queryset):
+        count = queryset.update(is_active=True)
+        self.message_user(request, f'Отметили как завершенные, следующее количество: {count} ')
+
+    complete_tasks.short_description = 'Отметить как завершенные'
+
+    def incomplete_tasks(self, request, queryset):
+        count = queryset.update(is_active=False)
+        self.message_user(request, f'Отметили как незавершенные, следующее количество: {count} ')
+
+    incomplete_tasks.short_description = 'Отметить как незавершенные'
+
+    def get_form(self,request,obj=None,**kwargs):
+        form=super(GruzAdmin,self).get_form(request,obj,**kwargs)
+        form.base_fields['author'].initial=request.user
+
+        if str(request.user)!='admin':
+            form.base_fields['author'].disabled = request.user
+
+        if request.user.groups.filter(name='MyGroup').exists():
+            self.exclude=('created',)
+
+        return form
+
+admin.site.register(Gruz,GruzAdmin)

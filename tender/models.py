@@ -2,12 +2,12 @@ from django.db import models
 # from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
-from ckeditor.fields import RichTextField
-from ckeditor_uploader.fields import RichTextUploadingField
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
+# from ckeditor.fields import RichTextField
+# from ckeditor_uploader.fields import RichTextUploadingField
+# from ckeditor_uploader.widgets import CKEditorUploadingWidget
 import uuid
 
-import erp_tender.settings
+# import erp_tender.settings
 
 
 class User(AbstractUser):
@@ -353,15 +353,17 @@ class IconsDealers(models.Model):
 
 
 
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
 class PostavTab(models.Model):
     Y = 'Да'
+    P = '1Пролонг.'
     N = 'Нет'
     NT = 'Не треб.'
 
-    CHOI = ((Y, 'Да'), (N, 'Нет'), (NT, 'Не треб.'),)
+    CHOI = ((Y, 'Да'), (P, '1Пролонг.'), (N, 'Нет'), (NT, 'Не треб.'),)
 
     is_active = models.BooleanField(default=False, db_index=True, verbose_name='Не нужен контроль')
+    uslugi_vidy = models.TextField(max_length=500, blank=True, verbose_name='Виды услуг')
     organizations = models.CharField(max_length=200, null=True, blank=True, verbose_name='Юридические лица')
 
     inn = models.CharField(max_length=50, null=True, blank=True, verbose_name='ИНН')
@@ -369,25 +371,22 @@ class PostavTab(models.Model):
 
     dogovor = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет',
                                verbose_name='Договор - Да/Нет')
-
+    nomer_dogovor = models.CharField(max_length=100, null=True, blank=True, verbose_name='Номер договора')
 
     date_dogovor = models.DateField(null=True, blank=True, verbose_name='Дата договора')
-
-    SROK_DOGOVOR = models.TextField(max_length=5000, blank=True, verbose_name='Срок хранения договора', default='365')
-
-    @property
-    def is_past_due(self):
-        if not self.date_dogovor:
-            return 'no'
-        return (self.date_dogovor + timedelta(days=365) < timezone.now().date())
-
-
+    date_do_dogovor = models.DateField(null=True, blank=True, verbose_name='До какой даты договор')
     dop = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет',
                            verbose_name='Доп. соглашение - Да/Нет')
-
+    date_dop = models.DateField(null=True, blank=True, verbose_name='Дата доп. соглашения')
     protokol = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет',
                                 verbose_name='Протокол встреч - Да/Нет')
+    date_protokol = models.DateField(null=True, blank=True, verbose_name='Дата протокола')
 
+    # @property
+    # def is_past_due(self):
+    #     if not self.date_dogovor:
+    #         return 'no'
+    #     return (self.date_dogovor + timedelta(days=365) < timezone.now().date())
 
     sverka_1 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет',
                                 verbose_name='Сверка 1 кв. - Да/Нет')
@@ -397,6 +396,8 @@ class PostavTab(models.Model):
                                 verbose_name='Сверка 3 кв. - Да/Нет')
     sverka_4 = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет',
                                 verbose_name='Сверка 4 кв. - Да/Нет')
+    sverka_god = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет',
+                                verbose_name='Годовая сверка - Да/Нет')
 
     ur_dokument = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет',
                                    verbose_name='Юр. документы - Да/Нет')
@@ -409,12 +410,13 @@ class PostavTab(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
 
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+    SROK_DOGOVOR = models.TextField(max_length=5000, blank=True, verbose_name='Срок хранения договора', default='365')
 
     def __str__(self):
         return str(self.organizations)
 
     class Meta:
-        ordering = ['organizations']
+        ordering = ['is_active','organizations',]
         verbose_name_plural = 'Данные наличия документов поставщиков'
         verbose_name = 'Данные поставщика'
 
@@ -465,4 +467,50 @@ class Info(models.Model):
         verbose_name_plural = 'Полезные информации'
         verbose_name = 'Полезная информация'
 
+
+
+class Gruz(models.Model):
+
+    is_active = models.BooleanField(default=False, db_index=True, verbose_name='Оплачен')
+
+    created = models.DateTimeField('Дата и время создания', default=timezone.now)
+    name_gruz = models.CharField(max_length=200,blank=True,null=True, verbose_name='Грузоперевозчик')
+    data_gruz = models.DateTimeField(null=True, verbose_name='Дата загрузки')
+
+    schet = models.CharField(max_length=50, blank=True, verbose_name='№ Счет')
+    data_schet = models.DateTimeField(null=True, blank=True, verbose_name='Дата счета')
+    price_schet = models.CharField(max_length=10, blank=True, verbose_name='Сумма счета')
+
+
+    city_1 = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город загрузки', related_name='gruz_city_1')
+    city_2 = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город поставки', related_name='gruz_city_2')
+    # city_1 = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город загрузки')
+    # city_2 = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город поставки')
+    info_map = models.TextField(max_length=500, blank=True, verbose_name='Инфо к маршруту')
+
+    Y = 'Да'
+    N = 'Нет'
+    NT = 'Не треб.'
+    CHOI = ((Y, 'Да'), (N, 'Нет'), (NT, 'Не треб.'),)
+    to = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Нет', verbose_name='Внесен в ТО: Да/Нет')
+    data_to = models.DateTimeField(null=True, blank=True, verbose_name='Дата в ТО')
+
+    M = 'Микс'
+    C = 'СиМ'
+    D = 'Двери'
+    CHOI = ((M, 'Микс'), (C, 'СиМ'), (D, 'Двери'),)
+    miks = models.CharField(max_length=16, choices=CHOI, blank=True, null=True, default='Микс',
+                          verbose_name='Микс/СиМ/Двери')
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
+    staffer = models.ForeignKey(Staffer, on_delete=models.SET_NULL, null=True, verbose_name='отв. Сотрудник за доставку')
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.name_gruz}, Дата погрузки: {self.data_gruz}, Маршрут: {self.city_1}-{self.city_2}, Товар: {self.miks}'
+
+    class Meta:
+        ordering = ['-data_gruz']
+        verbose_name_plural = 'Доставки'
+        verbose_name = 'Доставка'
 

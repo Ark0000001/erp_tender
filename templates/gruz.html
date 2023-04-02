@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+
+
+</nav>
+
+
+    {% block otvet %}
+        <div style="overflow:scroll;">
+            <table class="table">
+                <thead>
+                <tr align="center">
+
+                    <th>Отв. за доставку</th>
+                    <th>Грузоперевозчик/Маршрут</th>
+                    <th>Счет в ТО</th>
+                </tr>
+                </thead>
+                <p></p>
+                {% if user.is_authenticated %}
+                    <p style="padding-left:15px;">Всего доставок:
+                        {% for tab in tabs %}{% if forloop.last %}  <font color="cc0000">{{ forloop.counter}}</font>{% endif %}{% endfor %}</p>
+
+                    {% for tab in tabs %}
+                        <tbody>
+                        <tr class="{% cycle 'bg-light' 'bg-white' %}">
+                            <td><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"></td>
+                            <td><a href="/admin/tender/gruz/{{ tab.id }}/change">Перевозчик: {{ tab.name_gruz }}<br>Дата погрузки: {{ tab.data_gruz }}<br>Маршрут: {{ tab.city_1 }}-{{ tab.city_2 }} ({{ tab.info_map }})<br>Товар: {{ tab.miks }}</a></td>
+
+                            {% if tab.to == 'Да' %}
+                            <td class="bg-success">№{{ tab.schet }}, от {{ tab.data_schet }}<br> сумма: {{ tab.price_schet }}</td>
+                            {% elif tab.to == 'Нет' %}
+                            <td class="bg-danger">НЕ ЗАНЕСЕН в ТО! Договорились о цене: {{ tab.price_schet }}</td>
+                        {% else %}
+                            <td class="bg-warning">НЕ НУЖНО ЗАНОСИТЬ В ТО! Договорились о цене: {{ tab.price_schet }}</td>
+{% endif %}
+
+
+
+                        </tr>{% endfor %}
+                {% else %}
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                        </tbody>{% endif %}
+            </table>
+        </div>
+    {% endblock otvet %}
+{% endblock %}
+

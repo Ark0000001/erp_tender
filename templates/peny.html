@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% block otvet %}
+
+        <p></p>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+<h1 class="navbar-brand text-warning" style="margin-bottom: 30px;">Здесь будет выведен результат</h1>
+</nav>
+
+    {% endblock %}
+
+
+    <p></p>
+    <p  class="navbar-brand" style="padding-left:20px;" >Калькулятор <br>расчёта неустойки (пени - 1/300)
+    <h4  style="padding-left:20px;" ><br><strong>Входные данные: </strong><br>Сумма задолженности<br>Период просрочки (дней)
+        <br>Ключевая ставка (ставка рефинансирования)<br><br>
+    </h4></p>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+<form action="peny" method="POST" class="text-warning">
+    {% csrf_token %}
+
+    Введите сумму задолженности: <input type="text" value="0" class="form-control" name="num1"><br><br>
+    Введите период просрочки (дней): <input type="text" value="0" class="form-control" name="num2"><br><br>
+
+    Введите ключевую ставку: <input type="text" value="0" class="form-control" name="num3"><br><br>
+
+    <input class="form-control" type="submit">
+
+</form>
+</nav><p></p>
+
+
+{% endblock %}
