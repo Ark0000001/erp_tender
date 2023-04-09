@@ -31,7 +31,9 @@ urlpatterns = [
     path('contrprod/', controlProd, name='contrprod'),
     path('pereschet/poisk', poisk, name='poisk'),
     path('info/',info, name='info'),
+    path('arhiv_z/',arhiv_z, name='arhiv_z'),
     path('poisk_tasks', poisk_tasks, name='poisk_tasks'),
+    path('poisk_tasks_arhiv_z', poisk_tasks_arhiv_z, name='poisk_tasks_arhiv_z'),
     path('tender/', tenderTab, name='tender'),
     path('gruz/', gruzTab, name='gruz'),
 

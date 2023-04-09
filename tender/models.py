@@ -479,7 +479,7 @@ class Gruz(models.Model):
 
     schet = models.CharField(max_length=50, blank=True, verbose_name='№ Счет')
     data_schet = models.DateTimeField(null=True, blank=True, verbose_name='Дата счета')
-    price_schet = models.CharField(max_length=10, blank=True, verbose_name='Сумма счета')
+    price_schet = models.CharField(max_length=100, blank=True, verbose_name='Сумма счета')
 
 
     city_1 = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город загрузки', related_name='gruz_city_1')

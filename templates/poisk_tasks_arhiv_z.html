@@ -1,0 +1,52 @@
+{% extends 'home.html' %}
+
+{% block task %}
+  <div style="overflow:scroll;">
+    <table class="table">
+        <thead>
+        <tr>
+
+            <th>Отв. сотрудник</th>
+            <th>Описание завершенной задачи</th>
+            <th>Сделать до:</th>
+{#            <th>Имя задачи</th>#}
+            <th>Дата и время создания</th>
+{#            <th>Тип задачи (конкурса)</th>#}
+
+        </tr>
+        </thead><p></p>
+
+<p style="padding-left:15px;">Всего завершенных задач: {% for tab in tabs %}{% if forloop.last %}  {{ forloop.counter}}{% endif %}{% endfor %}</p>
+        {% if user.is_authenticated %}
+            {% for tab in tabs %}
+                <tbody>
+
+
+                <tr class="{% cycle 'bg-light' 'bg-white' %}">
+
+                    <td><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"></td>
+                    <td ><a href="/admin/tender/tab/{{ tab.id }}/change">№{{ tab.id }} - имя: {{ tab.profit_info }} <br> Описание: {{ tab.task_info|truncatechars:100  }} Далее</a></td>
+
+
+                    <td class="nav-link text-danger">{{ tab.data2|date:"d.m.Y.D" }}</td>
+
+{#                    <td>{{ tab.profit_info }}</td>#}
+ <td>{{ tab.created|date:"d.M.Y.D" }}</td>
+{#                    <td>{{ tab.type_tender }}</td>#}
+
+
+
+                </tr>{% endfor %}
+        {% else %}
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+        </tbody>{% endif %}
+    </table>
+
+</div>
+
+{% endblock %}

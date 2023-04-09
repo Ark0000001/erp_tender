@@ -28,10 +28,10 @@
                         <tbody>
                         <tr class="{% cycle 'bg-light' 'bg-white' %}">
                             <td><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"></td>
-                            <td><a href="/admin/tender/gruz/{{ tab.id }}/change">Перевозчик: {{ tab.name_gruz }}<br>Дата погрузки: {{ tab.data_gruz }}<br>Маршрут: {{ tab.city_1 }}-{{ tab.city_2 }} ({{ tab.info_map }})<br>Товар: {{ tab.miks }}</a></td>
+                            <td><a href="/admin/tender/gruz/{{ tab.id }}/change">Перевозчик: {{ tab.name_gruz }}<br>Дата погрузки: {{ tab.data_gruz|date:"d.m.Y" }}<br>Маршрут: {{ tab.city_1 }}-{{ tab.city_2 }} ({{ tab.info_map }})<br>Товар: {{ tab.miks }}</a></td>
 
                             {% if tab.to == 'Да' %}
-                            <td class="bg-success">№{{ tab.schet }}, от {{ tab.data_schet }}<br> сумма: {{ tab.price_schet }}</td>
+                            <td class="bg-success">№{{ tab.schet }}, от {{ tab.data_schet|date:"d.m.Y" }}<br> сумма: {{ tab.price_schet }}</td>
                             {% elif tab.to == 'Нет' %}
                             <td class="bg-danger">НЕ ЗАНЕСЕН в ТО! Договорились о цене: {{ tab.price_schet }}</td>
                         {% else %}

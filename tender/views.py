@@ -308,6 +308,13 @@ def poisk_tasks(request):
 
     context = {"tabs": tabs}
     return render(request, "poisk_tasks.html", context)
+def poisk_tasks_arhiv_z(request):
+    num1 = request.POST['task_info_arhiv_z']
+    tabs = Tab.objects.filter(is_active=True).filter(
+        Q(task_info__icontains=num1) | Q(id__icontains=num1) | Q(profit_info__icontains=num1)).order_by('data2')
+
+    context = {"tabs": tabs}
+    return render(request, "poisk_tasks_arhiv_z.html", context)
 
 
 def tenderTab(request):
@@ -368,3 +375,8 @@ def gruzTab(request):
 
     context = {'tabs': tabs}
     return render(request, 'gruz.html', context)
+
+def arhiv_z(request):
+    tabs = Tab.objects.filter(is_active=True).order_by('data2')
+    context = {'tabs': tabs}
+    return render(request, 'arhiv_z.html', context)
