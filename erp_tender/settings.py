@@ -2,6 +2,8 @@
 # pip install --upgrade pip
 # pip freeze > requirements.txt
 # fuser -k 8000/tcp
+# ps aux | grep pycharm
+# kill 373614
 
 import os
 from pathlib import Path
