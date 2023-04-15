@@ -30,6 +30,7 @@ urlpatterns = [
     path('pereschet/', prodTab, name='pereschet'),
     path('contrprod/', controlProd, name='contrprod'),
     path('pereschet/poisk', poisk, name='poisk'),
+    path('chatbot/chatbot', chatbot, name='chatbot'),
     path('info/',info, name='info'),
     path('arhiv_z/',arhiv_z, name='arhiv_z'),
     path('poisk_tasks', poisk_tasks, name='poisk_tasks'),

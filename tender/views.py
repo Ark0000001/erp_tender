@@ -8,6 +8,31 @@ from .forms import UserCreationForm
 import logging
 from django.core.management import call_command
 import datetime
+import openai
+from django.conf import settings
+
+
+def chatbot(request):
+    chatbot_response = None
+
+    if request.method == 'POST':
+        openai.api_key = settings.KEY_OPENAI
+        user_input = request.POST.get('chatbot')
+        prompt=user_input
+
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,  # use the updated prompt variable here
+            max_tokens=1024,
+
+
+            temperature=0.5,
+        )
+
+
+        chatbot_response=response['choices'][0]['text']
+
+    return render(request, 'chat_bot.html', {'response': chatbot_response})
 
 logger = logging.getLogger('main')
 

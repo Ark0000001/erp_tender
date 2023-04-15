@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    <p></p>
+    <p  class="navbar-brand" style="padding-left:20px;" >CHATBOT</p>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+{% if user.is_authenticated %}
+<form action="chatbot" method="POST" class="text-warning">
+    {% csrf_token %}
+
+    Напишите запрос: <input type="text" class="form-control" name="chatbot">
+
+
+    <button class="btn btn-primary mt-3" type="submit">Ответь бот</button>
+
+</form>
+</nav>
+    <p></p><div  >
+<div>
+        <div style="padding-left:20px;" style="padding-right:20px;" style="padding-top:20px;" style="padding-bottom:20px;">
+        <p >
+            {% if response %}
+
+    {{ response|safe }}
+
+{% endif %}</p></div>
+    </div>
+ {% endif %}
+</p>
+
+<p></p>
+</div>
+
+{% endblock %}
+
