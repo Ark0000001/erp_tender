@@ -1,4 +1,4 @@
-from .models import Tab, DealerTab, IconsDealers, PostavTab, Product, ControlProduct, Info, TenderTab, Gruz
+from .models import *
 
 from django.contrib.auth import authenticate, login
 from django.views import View
@@ -405,3 +405,9 @@ def arhiv_z(request):
     tabs = Tab.objects.filter(is_active=True).order_by('-data2')
     context = {'tabs': tabs}
     return render(request, 'arhiv_z.html', context)
+
+def zakazTab(request):
+    tabs = ZakazTab.objects.filter(is_active=False).order_by('data_zakaz')
+
+    context = {'tabs': tabs}
+    return render(request, 'zakaz.html', context)

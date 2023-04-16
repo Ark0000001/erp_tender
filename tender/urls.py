@@ -33,6 +33,7 @@ urlpatterns = [
     path('chatbot/chatbot', chatbot, name='chatbot'),
     path('info/',info, name='info'),
     path('arhiv_z/',arhiv_z, name='arhiv_z'),
+    path('zakaz/',zakazTab, name='zakaz'),
     path('poisk_tasks', poisk_tasks, name='poisk_tasks'),
     path('poisk_tasks_arhiv_z', poisk_tasks_arhiv_z, name='poisk_tasks_arhiv_z'),
     path('tender/', tenderTab, name='tender'),

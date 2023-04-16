@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+<div class="navbar-brand">ЗАКАЗ/НЕСТАНДАРТ</div>
+</nav>
+    {% block otvet %}
+        <div style="overflow:scroll;">
+            <table class="table">
+                <thead>
+                <tr align="center">
+
+                    <th>Отв. за заказ</th>
+                    <th>№ Заказа/описание/дата создания</th>
+                    <th>Дата выполнения</th>
+                </tr>
+                </thead>
+                <p></p>
+                {% if user.is_authenticated %}
+                    <p style="padding-left:15px;">Всего заказов:
+                        {% for tab in tabs %}{% if forloop.last %}  <font color="cc0000">{{ forloop.counter}}</font>{% endif %}{% endfor %}</p>
+
+                    {% for tab in tabs %}
+                        <tbody>
+                        <tr class="{% cycle 'bg-light' 'bg-white' %}">
+                            <td><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"></td>
+                            <td><a href="/admin/tender/zakaztab/{{ tab.id }}/change">Заказ №{{ tab.nomer_zakaz }}<br>Дата заказа: {{ tab.data_zakaz|date:"d.m.Y" }}<br>Имя заказа: {{ tab.name_zakaz }}<br>Описание: {{ tab.info_zakaz }}<br>Клиент: {{ tab.info_client }}<br>Счет №{{ tab.schet }})</a></td>
+                            <td><font color="cc0000">{{ tab.srok_zakaz|date:"d.m.Y" }}</font><br> <a href="{{ tab.zakaz_pdf.url }}" download>
+    Скачать файл заказа
+  </a></td>
+                        </tr>{% endfor %}
+                {% else %}
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                <td>Авторизуйтесь</td>
+                        </tbody>{% endif %}
+            </table>
+        </div>
+    {% endblock otvet %}
+{% endblock %}
+

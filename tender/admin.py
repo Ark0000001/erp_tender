@@ -317,3 +317,36 @@ class GruzAdmin(admin.ModelAdmin):
         return form
 
 admin.site.register(Gruz,GruzAdmin)
+
+class ZakazTabAdmin(admin.ModelAdmin):
+
+    list_display = ('is_active','staffer','nomer_zakaz','name_zakaz','data_zakaz','srok_zakaz','info_zakaz','schet','zakaz_pdf','created','author','updated')
+    list_display_links = ('nomer_zakaz','name_zakaz')
+    search_fields = ('nomer_zakaz','name_zakaz','info_zakaz')
+    actions = ('complete_tasks', 'incomplete_tasks',)
+
+    def complete_tasks(self, request, queryset):
+        count = queryset.update(is_active=True)
+        self.message_user(request, f'Отметили как завершенные, следующее количество: {count} ')
+
+    complete_tasks.short_description = 'Отметить как завершенные'
+
+    def incomplete_tasks(self, request, queryset):
+        count = queryset.update(is_active=False)
+        self.message_user(request, f'Отметили как незавершенные, следующее количество: {count} ')
+
+    incomplete_tasks.short_description = 'Отметить как незавершенные'
+
+    def get_form(self,request,obj=None,**kwargs):
+        form=super(ZakazTabAdmin,self).get_form(request,obj,**kwargs)
+        form.base_fields['author'].initial=request.user
+
+        if str(request.user)!='admin':
+            form.base_fields['author'].disabled = request.user
+
+        if request.user.groups.filter(name='MyGroup').exists():
+            self.exclude=('created',)
+
+        return form
+
+admin.site.register(ZakazTab,ZakazTabAdmin)

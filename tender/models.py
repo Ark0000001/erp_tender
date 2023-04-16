@@ -484,8 +484,7 @@ class Gruz(models.Model):
 
     city_1 = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город загрузки', related_name='gruz_city_1')
     city_2 = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город поставки', related_name='gruz_city_2')
-    # city_1 = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город загрузки')
-    # city_2 = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город поставки')
+
     info_map = models.TextField(max_length=500, blank=True, verbose_name='Инфо к маршруту')
 
     Y = 'Да'
@@ -514,3 +513,36 @@ class Gruz(models.Model):
         verbose_name_plural = 'Доставки'
         verbose_name = 'Доставка'
 
+import datetime
+def upload_to(instance, filename):
+    now = datetime.datetime.now()
+    return 'file/zakaz/{}/{}/{}/{}'.format(now.year, now.month, now.day, filename)
+
+class ZakazTab(models.Model):
+    is_active = models.BooleanField(default=False, db_index=True, verbose_name='Завершено?')
+
+    staffer = models.ForeignKey(Staffer, on_delete=models.SET_NULL, null=True,
+                                verbose_name='отв. Сотрудник')
+    nomer_zakaz = models.CharField(max_length=50, blank=True, verbose_name='№ Заказа')
+    name_zakaz = models.CharField(null=True,max_length=500, verbose_name='Имя заказа')
+    data_zakaz = models.DateTimeField(null=True, blank=True, verbose_name='Дата заказа')
+    srok_zakaz = models.DateTimeField(null=True, verbose_name='Срок выполнения')
+    info_zakaz = models.TextField(max_length=1000, blank=True, verbose_name='Описание заказа')
+    info_client = models.TextField(max_length=1000, blank=True, verbose_name='Клиент/контакты')
+
+    schet = models.CharField(max_length=50, blank=True, verbose_name='№ Счета')
+
+
+    zakaz_pdf = models.FileField(null=True, blank=True, upload_to=upload_to)
+    created = models.DateTimeField('Дата и время создания', default=timezone.now)
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.name_zakaz)
+
+    class Meta:
+        ordering = ['nomer_zakaz']
+        verbose_name_plural = 'Заказы'
+        verbose_name = 'Заказ'
