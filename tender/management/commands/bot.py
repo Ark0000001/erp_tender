@@ -536,14 +536,14 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 import telebot
 from tender.models import Tab, DealerTab, IconsDealers, PostavTab, Product, ControlProduct, Info, TenderTab, Gruz
-import openai
+# import openai
 
 
 class Command(BaseCommand):
     help = 'Telegram bot'
 
     def handle(self, *args, **kwargs):
-        bot = telebot.TeleBot(settings.TELEGRAM_BOT_API_KEY, request_kwargs={'timeout': 60})
+        bot = telebot.TeleBot(settings.TELEGRAM_BOT_API_KEY)
 
         # def send_notification(id, profit_info):
         #     message = f"New record added to Tab model\nID: {id}\nProfit Info: {profit_info}"
@@ -553,7 +553,7 @@ class Command(BaseCommand):
         @bot.message_handler(func=lambda message: True)
         def start_handler(message):
 
-            openai.api_key = settings.KEY_OPENAI
+            # openai.api_key = settings.KEY_OPENAI
             latest_tab = Tab.objects.latest('id')
             today = datetime.now().date()
             data_tab = Tab.objects.filter(is_active=False).filter(data2__date=today)
@@ -562,18 +562,18 @@ class Command(BaseCommand):
             print(message.text, "  -  Владелец:  ", message.from_user.username, message.from_user.first_name)
             p=message.text
             message.text=p.lower()
-            if message.text.startswith("бот"):
-                prompt = message.text.split("бот", 1)[1].strip()
-                message.text=prompt
-
-                response = openai.Completion.create(
-                    engine="text-davinci-003",
-                    prompt=message.text,  # use the updated prompt variable here
-                    max_tokens=1024,
-                    n=1,
-                    stop=None,
-                    temperature=0.5,
-                )
+            # if message.text.startswith("бот"):
+            #     prompt = message.text.split("бот", 1)[1].strip()
+            #     message.text=prompt
+            #
+            #     response = openai.Completion.create(
+            #         engine="text-davinci-003",
+            #         prompt=message.text,  # use the updated prompt variable here
+            #         max_tokens=1024,
+            #         n=1,
+            #         stop=None,
+            #         temperature=0.5,
+            #     )
 
                 # openai.api_key = settings.KEY_OPENAI
                 # response = openai.Completion.create(
@@ -585,12 +585,12 @@ class Command(BaseCommand):
                 #     temperature=0.5,
                 #
                 # )
-                reply = response["choices"][0]["text"]
-                for chunk in range(0, len(reply), 4096):
-                    bot.send_message(message.chat.id, reply[chunk:chunk + 4096])
+                # reply = response["choices"][0]["text"]
+                # for chunk in range(0, len(reply), 4096):
+                #     bot.send_message(message.chat.id, reply[chunk:chunk + 4096])
 
             if message.text.startswith("latest"):
-                message.text = f"Последняя задача\n№: {latest_tab.id}\nИмя задачи: {latest_tab.profit_info}\nОтв.: {latest_tab.staffer}"
+                message.text = f"Последняя задача\n№: {latest_tab.id}\nИмя задачи: {latest_tab.profit_info}\nОписание: {latest_tab.task_info}\nОтв.: {latest_tab.staffer}"
                 bot.send_message(message.chat.id, message.text)
 
             if message.text.startswith("data"):
@@ -611,4 +611,11 @@ class Command(BaseCommand):
         #     except Exception as e:
         #         print(e)
 
-        bot.polling()
+        import time
+        import requests.exceptions
+
+        while True:
+            try:
+                bot.polling()
+            except requests.exceptions.ReadTimeout:
+                time.sleep(30)

@@ -2,36 +2,19 @@
 
 {% block content %}
 
-
-    <p></p>
-    <p  class="navbar-brand" style="padding-left:20px;" >CHATBOT</p>
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-{% if user.is_authenticated %}
-<form action="chatbot" method="POST" class="text-warning">
-    {% csrf_token %}
-
-    Напишите запрос: <input type="text" class="form-control" name="chatbot">
-
-
-    <button class="btn btn-primary mt-3" type="submit">Ответь бот</button>
-
-</form>
-</nav>
-    <p></p><div  >
-<div>
-        <div style="padding-left:20px;" style="padding-right:20px;" style="padding-top:20px;" style="padding-bottom:20px;">
-        <p >
-            {% if response %}
-
-    {{ response|safe }}
-
-{% endif %}</p></div>
-    </div>
- {% endif %}
-</p>
-
-<p></p>
+<div class="game-container">
+    <iframe width="100%" height="100%" src="https://v6p9d9t4.ssl.hwcdn.net/html/7801034/web/index.html" allowtransparency="true" webkitallowfullscreen="true" mozallowfullscreen="true" msallowfullscreen="true" scrolling="no" frameborder="0" id="game_drop" allowfullscreen="true"></iframe>
 </div>
 
+<style>
+    .game-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    iframe {
+        max-width: 100%;
+    }
+</style>
 {% endblock %}
 

@@ -3,7 +3,7 @@
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 
-<div class="navbar-brand">ПРОЕТЫ/ТЕНДЕРА</div>
+<div class="navbar-brand">ПРОЕКТЫ/ТЕНДЕРА</div>
 </nav>
 
 
@@ -38,19 +38,19 @@
                             <td><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"></td>
                             <td>{{ tab.price1|floatformat:"2g" }}</td>
                             <td>
-                                <a href="/admin/tender/tendertab/{{ tab.id }}/change">№{{ tab.id }}, {{ tab.client }}<br>имя: {{ tab.name_project }}
-                                    <br> Описание: {{ tab.task_info|truncatechars:100 }} Далее <br>Поставка
-                                    до: <i class="nav-link text-danger">{{ tab.srok_postavki|date:"d.m.Y" }}</i>  <br> Пеня за день просрочки: {{ tab.penya }}</a></td>
+                                <a href="/admin/tender/tendertab/{{ tab.id }}/change"><strong>№</strong>{{ tab.id }}, {{ tab.client }}<br><strong>Имя:</strong> {{ tab.name_project }}
+                                    <br> <strong>Описание:</strong> {{ tab.task_info|truncatechars:100 }} Далее <br><strong>Поставка
+                                    до:</strong> <i class="nav-link text-danger">{{ tab.srok_postavki|date:"d.m.Y" }}</i>  <br> <strong>Пеня за день просрочки:</strong> {{ tab.penya }}</a></td>
 
                             <td class="nav-link text-danger">{{ tab.data_win|date:"d.m.Y" }} <br><a href="{{ tab.number_tender }}">{{ tab.number_tender }}</a><br>{{ tab.url_tender }}</td>
                             {#                    <td>{{ tab.profit_info }}</td>#}
-                            <td>{{ tab.data_dog|date:"d.m.Y" }}<br>Договор с кем: {{ tab.filial }}<br>Счет №{{ tab.number_scheta }}<br>Заявка №{{ tab.number_zakaza }}</td>
+                            <td>{{ tab.data_dog|date:"d.m.Y" }}<br><strong>Договор с кем:</strong> {{ tab.filial }}<br><strong>Счет №</strong>{{ tab.number_scheta }}<br><strong>Заявка №</strong>{{ tab.number_zakaza }}</td>
                             <td>
 
                                 {% for task in tasks %}
                                     {% if task.project_id == tab.id %}
                                         <a href="/admin/tender/tab/{{ task.id }}/change">
-                                            №{{ task.id }}, {{ task.profit_info }}<br>Описание: {{ task.task_info|truncatechars:50 }}, {{ task.staffer }}<br>Сделать до: {{ task.data2|date:"d.m.Y" }}<br>________
+                                            <strong>№</strong>{{ task.id }}, {{ task.profit_info }}<br><strong>Описание:</strong> {{ task.task_info|truncatechars:50 }}<br><strong>Отв.:</strong> {{ task.staffer }}<br><strong>Сделать до:</strong> {{ task.data2|date:"d.m.Y" }}<br>________
                                             <br></a><br>
 
                                     {% endif %}{% endfor %}

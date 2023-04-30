@@ -1,3 +1,5 @@
+from django.views.decorators.clickjacking import xframe_options_exempt
+
 from .models import *
 
 from django.contrib.auth import authenticate, login
@@ -8,31 +10,35 @@ from .forms import UserCreationForm
 import logging
 from django.core.management import call_command
 import datetime
-import openai
-from django.conf import settings
+# import openai
+# from django.conf import settings
 
 
+@xframe_options_exempt
 def chatbot(request):
-    chatbot_response = None
+    # chatbot_response = None
+    #
+    # if request.method == 'POST':
+    #     openai.api_key = settings.KEY_OPENAI
+    #     user_input = request.POST.get('chatbot')
+    #     prompt=user_input
+    #
+    #     response = openai.Completion.create(
+    #         engine="text-davinci-003",
+    #         prompt=prompt,  # use the updated prompt variable here
+    #         max_tokens=1024,
+    #
+    #
+    #         temperature=0.5,
+    #     )
+    #
+    #
+    #     chatbot_response=response['choices'][0]['text']
+    response = render(request, 'chat_bot.html', {})
 
-    if request.method == 'POST':
-        openai.api_key = settings.KEY_OPENAI
-        user_input = request.POST.get('chatbot')
-        prompt=user_input
-
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,  # use the updated prompt variable here
-            max_tokens=1024,
 
 
-            temperature=0.5,
-        )
-
-
-        chatbot_response=response['choices'][0]['text']
-
-    return render(request, 'chat_bot.html', {'response': chatbot_response})
+    return response
 
 logger = logging.getLogger('main')
 
@@ -68,8 +74,23 @@ class Register(View):
 
 
 def Index(request):
+
+
+    tabs_s = Tab.objects.filter(is_active=False, staffer__name__istartswith='Ситник').order_by('data2')
+
+    tabs_k = Tab.objects.filter(is_active=False, staffer__name__istartswith='Кальницкий').order_by('data2')
+
+    tabs_m = Tab.objects.filter(is_active=False, staffer__name__istartswith='Муромцева').order_by('data2')
+
+    tabs_p = Tab.objects.filter(is_active=False, staffer__name__istartswith='Пелых').order_by('data2')
+
+    tabs_mir = Tab.objects.filter(is_active=False, staffer__name__istartswith='Мирончик').order_by('data2')
+
+    tabs_e = Tab.objects.filter(is_active=False, staffer__name__istartswith='Евтеев').order_by('data2')
     tabs = Tab.objects.filter(is_active=False).order_by('data2')
-    context = {'tabs': tabs, 'now': datetime.datetime.now()}
+    context = {'tabs': tabs, 'tabs_s': tabs_s, 'tabs_k': tabs_k, 'tabs_m': tabs_m, 'tabs_p': tabs_p, 'tabs_mir': tabs_mir,
+               'tabs_e': tabs_e, 'now': datetime.datetime.now()}
+
     return render(request, 'home.html', context)
 
 
@@ -122,6 +143,7 @@ def Index_Evt(request):
 
     context = {'tabs': tabs, 'now': datetime.datetime.now()}
     return render(request, 'evt.html', context)
+
 
 
 def addition(request):

@@ -4,6 +4,9 @@
 # fuser -k 8000/tcp
 # ps aux | grep pycharm
 # kill 373614
+# pip freeze --local > ./requirements.txt
+
+
 
 import os
 from pathlib import Path
@@ -26,6 +29,8 @@ KEY_OPENAI=os.getenv('TOKEN_OPENAI')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+
+
 
 
 # Application definition
