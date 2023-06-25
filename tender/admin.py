@@ -230,10 +230,13 @@ class ControlProdAdmin(ImportExportModelAdmin):
 admin.site.register(ControlProduct,ControlProdAdmin)
 
 class InfoAdmin(admin.ModelAdmin):
-    list_display = ('name','created','author','content','text','updated')
+    list_display = ('name','get_tags','created','author','content','text','updated')
     list_display_links = ('name','content','text','updated')
     form = InfoAdminForm
     search_fields = ('name','content','text')
+
+    def get_tags(self, obj):
+        return ", ".join(o for o in obj.tags.names())
 
     def get_form(self,request,obj=None,**kwargs):
         form=super(InfoAdmin,self).get_form(request,obj,**kwargs)
@@ -254,9 +257,10 @@ admin.site.register(Info,InfoAdmin)
 
 class TenderTabAdmin(admin.ModelAdmin):
 
-    list_display = ('is_active','name_project','price1','data_win','comment_info','staffer','srok_postavki','type_tender','task_info','created','number_tender','url_tender','number_scheta','number_zakaza','city','client','info_client','group_prod','info','filial','economic')
+    list_display = ('is_active','id','name_project','price1','data_win','comment_info','staffer','srok_postavki','type_tender','task_info','created','number_tender','url_tender','number_scheta','number_zakaza','city','client','info_client','group_prod','info','filial','economic')
     list_display_links = ('staffer','name_project','staffer','client','data_win','task_info')
-    search_fields = ('staffer__name','name_project','client__name','task_info')
+    # search_fields = ('staffer__name','id','name_project','client__name','task_info')
+    search_fields = ('id','name_project')
     actions = ('complete_tasks', 'incomplete_tasks',)
 
     def complete_tasks(self, request, queryset):
@@ -287,9 +291,9 @@ admin.site.register(TenderTab,TenderTabAdmin)
 
 class GruzAdmin(admin.ModelAdmin):
 
-    list_display = ('is_active','name_gruz','data_gruz','schet','price_schet','data_schet','city_1','city_2','info_map','to','data_to','miks','author','staffer','updated')
+    list_display = ('is_active','id','name_gruz','data_gruz','schet','price_schet','data_schet','city_1','city_2','info_map','to','data_to','miks','author','staffer','updated')
     list_display_links = ('name_gruz','data_gruz','schet','price_schet')
-    search_fields = ('name_gruz','city_1','city_2')
+    search_fields = ('name_gruz','id','city_1','city_2')
     actions = ('complete_tasks', 'incomplete_tasks',)
 
     def complete_tasks(self, request, queryset):
@@ -320,9 +324,9 @@ admin.site.register(Gruz,GruzAdmin)
 
 class ZakazTabAdmin(admin.ModelAdmin):
 
-    list_display = ('is_active','staffer','nomer_zakaz','name_zakaz','data_zakaz','srok_zakaz','info_zakaz','schet','zakaz_pdf','created','author','updated')
+    list_display = ('is_active','id','staffer','nomer_zakaz','name_zakaz','data_zakaz','srok_zakaz','info_zakaz','schet','zakaz_pdf','created','author','updated')
     list_display_links = ('nomer_zakaz','name_zakaz')
-    search_fields = ('nomer_zakaz','name_zakaz','info_zakaz')
+    search_fields = ('nomer_zakaz','id','name_zakaz','info_zakaz')
     actions = ('complete_tasks', 'incomplete_tasks',)
 
     def complete_tasks(self, request, queryset):

@@ -5,6 +5,9 @@
 # ps aux | grep pycharm
 # kill 373614
 # pip freeze --local > ./requirements.txt
+# python manage.py makemigrations
+# python manage.py migrate
+
 
 
 
@@ -52,6 +55,8 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'dbbackup',
     'django_apscheduler',
+    'django_extensions',
+    'taggit',
 
 
 ]
@@ -207,3 +212,5 @@ CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 # }
 
 DATE_INPUT_FORMATS = ['%d/%m/%Y']
+
+TAGGIT_CASE_INSENSITIVE = True

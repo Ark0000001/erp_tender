@@ -2,7 +2,7 @@ from django.urls import path, include
 
 from .views import *
 import re
-
+from transliterate import translit
 
 # app_name = 'tender'
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
     path('glu/', Index_Glu, name='glu'),
     path('skor/', Index_Skor, name='skor'),
     path('mir/', Index_Mir, name='mir'),
+    path('tur/', Index_Tur, name='tur'),
     path('evt/', Index_Evt, name='evt'),
     path('ind/',ind, name='ind'),
     path('ind/add', addition, name='add'),
@@ -32,6 +33,8 @@ urlpatterns = [
     path('pereschet/poisk', poisk, name='poisk'),
     path('chatbot/chatbot', chatbot, name='chatbot'),
     path('info/',info, name='info'),
+    path('info/<int:pk>/', InfoDetailView.as_view(), name='info_detail'),
+    path('tags/<slug:tag_slug>/', TagIndexView.as_view(), name='posts_by_tag'),
     path('arhiv_z/',arhiv_z, name='arhiv_z'),
     path('zakaz/',zakazTab, name='zakaz'),
     path('poisk_tasks', poisk_tasks, name='poisk_tasks'),

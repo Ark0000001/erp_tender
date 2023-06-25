@@ -1,6 +1,7 @@
 from django.views.decorators.clickjacking import xframe_options_exempt
-
+from taggit.models import Tag
 from .models import *
+from django.views.generic import ListView
 
 from django.contrib.auth import authenticate, login
 from django.views import View
@@ -12,6 +13,36 @@ from django.core.management import call_command
 import datetime
 # import openai
 # from django.conf import settings
+from django.views.generic.detail import DetailView
+
+
+
+
+class InfoDetailView(DetailView):
+    model = Info
+
+
+
+
+
+class TagMixin(object):
+    def get_context_data(self, **kwargs):
+        context = super(TagMixin, self).get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all()
+        return context
+
+class TagIndexView(TagMixin,ListView):
+    model = Info
+    template_name = 'info.html'
+    context_object_name = 'tabs'
+
+
+    def get_queryset(self):
+        print(self.kwargs.get('tag_slug'))
+        return Info.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
+
+
+
 
 
 @xframe_options_exempt
@@ -36,17 +67,13 @@ def chatbot(request):
     #     chatbot_response=response['choices'][0]['text']
     response = render(request, 'chat_bot.html', {})
 
-
-
     return response
 
 logger = logging.getLogger('main')
 
-
 def trial(request):
     call_command('dbbackup')
     return print('db created! - ')
-
 
 class Register(View):
     template_name = 'registration/register.html'
@@ -85,11 +112,13 @@ def Index(request):
     tabs_p = Tab.objects.filter(is_active=False, staffer__name__istartswith='Пелых').order_by('data2')
 
     tabs_mir = Tab.objects.filter(is_active=False, staffer__name__istartswith='Мирончик').order_by('data2')
+    tabs_tur = Tab.objects.filter(is_active=False, staffer__name__istartswith='Турова').order_by('data2')
 
     tabs_e = Tab.objects.filter(is_active=False, staffer__name__istartswith='Евтеев').order_by('data2')
     tabs = Tab.objects.filter(is_active=False).order_by('data2')
-    context = {'tabs': tabs, 'tabs_s': tabs_s, 'tabs_k': tabs_k, 'tabs_m': tabs_m, 'tabs_p': tabs_p, 'tabs_mir': tabs_mir,
-               'tabs_e': tabs_e, 'now': datetime.datetime.now()}
+    count = Tab.objects.filter(is_active=False).count()
+    context = {'tabs': tabs, 'count': count,'tabs_s': tabs_s, 'tabs_k': tabs_k, 'tabs_m': tabs_m, 'tabs_p': tabs_p, 'tabs_mir': tabs_mir,
+               'tabs_e': tabs_e, 'tabs_tur': tabs_tur, 'now': datetime.datetime.now()}
 
     return render(request, 'home.html', context)
 
@@ -134,6 +163,12 @@ def Index_Mir(request):
     tabs = Tab.objects.filter(is_active=False, staffer__name__istartswith='Мирончик').order_by('data2')
     context = {'tabs': tabs, 'now': datetime.datetime.now()}
     return render(request, 'mir.html', context)
+
+
+def Index_Tur(request):
+    tabs = Tab.objects.filter(is_active=False, staffer__name__istartswith='Турова').order_by('data2')
+    context = {'tabs': tabs, 'now': datetime.datetime.now()}
+    return render(request, 'tur.html', context)
 
 
 def Index_Evt(request):
@@ -343,8 +378,9 @@ def poisk(request):
 
 def info(request):
     tabs = Info.objects.order_by('-updated')
+    tags = Tag.objects.all()
 
-    context = {"tabs": tabs}
+    context = {"tabs": tabs, 'tags': tags}
     return render(request, "info.html", context)
 
 
@@ -419,8 +455,9 @@ def ind_peny(request):
 
 def gruzTab(request):
     tabs = Gruz.objects.filter(is_active=False).order_by('data_gruz')
+    tasks = Tab.objects.filter(is_active=False).order_by('data2')
+    context = {'tabs': tabs, 'tasks': tasks}
 
-    context = {'tabs': tabs}
     return render(request, 'gruz.html', context)
 
 def arhiv_z(request):
@@ -430,6 +467,8 @@ def arhiv_z(request):
 
 def zakazTab(request):
     tabs = ZakazTab.objects.filter(is_active=False).order_by('data_zakaz')
-
-    context = {'tabs': tabs}
+    tasks = Tab.objects.filter(is_active=False).order_by('data2')
+    context = {'tabs': tabs, 'tasks': tasks}
     return render(request, 'zakaz.html', context)
+
+

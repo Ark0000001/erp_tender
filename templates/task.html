@@ -37,16 +37,17 @@
 
 
             {% for tab in tabs %}
-                <tbody>
+                <tbody >
 
 
                 <tr class="{% cycle 'bg-light' 'bg-white' %}">
 
-                      <td align="center"><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"><br>Сделать до:<br><font size="2" color="cc0000">{{ tab.data2|date:"d.m.Y" }}</font></td>
+                      <td align="center"><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"><br>Сделать до:<br><font size="2" color="cc0000">{{ tab.data2|date:"d.m.Y" }}<br>Время: {{ tab.clock }}</font></td>
 
 
                      <td ><a href="/admin/tender/tab/{{ tab.id }}/change">№{{ tab.id }} - имя: {{ tab.profit_info }} <br> Описание: {{ tab.task_info|truncatechars:100  }} Далее</a></td>
- <td width="15%"><strong>Проект:</strong><br><a href="/admin/tender/tendertab/{{ tab.project_id }}/change">{{ tab.project }}</a><br><strong>Нестандарт:</strong><br><a href="/admin/tender/zakaztab/{{ tab.zakaz_id }}/change">{{ tab.zakaz }}</a></td>
+ <td width="15%"><strong>Проект:</strong><br><a href="/admin/tender/tendertab/{{ tab.project_id }}/change">{{ tab.project }}</a><br><strong>Нестандарт:</strong><br><a href="/admin/tender/zakaztab/{{ tab.zakaz_id }}/change">{{ tab.zakaz }}</a>
+ <br><strong>Доставки:</strong><br><a href="{% url 'gruz' %}#{{ tab.gruz_id }}">{{ tab.gruz }}</a></td>
 {#                    <td class="nav-link text-danger">{{ tab.data2|date:"d.m.Y" }}</td>#}
 {#                    <td>{{ tab.profit_info }}</td>#}
 {#                    <td>{{ tab.created|date:"d.M.Y.D" }}</td>#}

@@ -13,6 +13,7 @@
                     <th>Отв. за заказ</th>
                     <th>№ Заказа/описание/дата создания</th>
                     <th>Дата выполнения</th>
+                    <th>Задачи</th>
                 </tr>
                 </thead>
                 <p></p>
@@ -25,7 +26,7 @@
                         <tbody>
                         <tr id="{{ tab.id }}" class="{% cycle 'bg-light' 'bg-white' %}">
                             <td><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"></td>
-                            <td><a href="/admin/tender/zakaztab/{{ tab.id }}/change"><strong>Заказ
+                            <td><a href="/admin/tender/zakaztab/{{ tab.id }}/change"><strong>id:</strong>{{ tab.id }}, <strong>Заказ
                                 №</strong>{{ tab.nomer_zakaz }}<br><strong>Дата
                                 заказа:</strong> {{ tab.data_zakaz|date:"d.m.Y" }}<br><strong>Имя
                                 заказа:</strong> {{ tab.name_zakaz }}<br><strong>Описание:</strong> {{ tab.info_zakaz }}<br><strong>Клиент:</strong> {{ tab.info_client }}<br><strong>Счет
@@ -40,8 +41,21 @@
                                 <td><font color="cc0000">{{ tab.srok_zakaz|date:"d.m.Y" }}</font><br>
                                     <font color="#cc0000"><strong>Нет файла</strong></font></td>{% endif %}
 
+                        <td>
+
+                                {% for task in tasks %}
+                                    {% if task.zakaz_id == tab.id %}
+                                        <a href="/admin/tender/tab/{{ task.id }}/change">
+                                            <strong>№</strong>{{ task.id }}, {{ task.profit_info }}<br><strong>Описание:</strong> {{ task.task_info|truncatechars:50 }}<br><strong>Отв.:</strong> {{ task.staffer }}<br><strong>Сделать до:</strong> {{ task.data2|date:"d.m.Y" }}<br>________
+                                            <br></a><br>
+
+                                    {% endif %}{% endfor %}
+
+                            </td>
+
                         </tr>{% endfor %}
                 {% else %}
+                <td>Авторизуйтесь</td>
                 <td>Авторизуйтесь</td>
                 <td>Авторизуйтесь</td>
                 <td>Авторизуйтесь</td>

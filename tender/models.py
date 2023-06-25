@@ -6,9 +6,10 @@ from django.contrib.auth.models import AbstractUser
 # from ckeditor_uploader.fields import RichTextUploadingField
 # from ckeditor_uploader.widgets import CKEditorUploadingWidget
 import uuid
-
+from taggit.managers import TaggableManager
+from slugify import slugify
 # import erp_tender.settings
-
+from transliterate import translit
 
 class User(AbstractUser):
     pass
@@ -181,7 +182,7 @@ class ZakazTab(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'№{self.nomer_zakaz}, до: {self.srok_zakaz}, имя: {self.name_zakaz}'
+        return f'id:{self.id}, №{self.nomer_zakaz}, до: {self.srok_zakaz}, имя: {self.name_zakaz}, отв.: {self.staffer}'
 
     class Meta:
         ordering = ['nomer_zakaz']
@@ -233,7 +234,7 @@ class TenderTab(models.Model):
     filial = models.ForeignKey(Filial, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Филиал от кого?')
 
     def __str__(self):
-        return f'№{self.id}, {self.name_project}'
+        return f'№{self.id}, {self.name_project}, отв.: {self.staffer}'
 
     class Meta:
         ordering = ['data_win']
@@ -242,62 +243,7 @@ class TenderTab(models.Model):
 
 
 
-class Tab(models.Model):
-    is_active=models.BooleanField(default=False,db_index=True, verbose_name='Завершено?')
-    # YES='Да'
-    # NO='Нет'
-    # CHOICES = [(YES, 'Да'), (NO, 'Нет'),]
-    # protection = models.CharField(max_length=3, choices=CHOICES, default=YES,verbose_name='Защита')
-    profit_info = models.CharField(max_length=200, blank=True,
-                                   verbose_name='Имя задачи')
-    task_info = models.TextField(max_length=5000, blank=True, verbose_name='Описание задачи')
-    project = models.ForeignKey(TenderTab, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Проект')
 
-    zakaz = models.ForeignKey(ZakazTab, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Заказ')
-
-    data2 = models.DateTimeField(verbose_name='Сделать до:')
-    staffer = models.ForeignKey(Staffer, on_delete=models.SET_NULL, null=True, verbose_name='отв. Сотрудник')
-    type_tender = models.ForeignKey(Type_tender, on_delete=models.SET_NULL, blank=True,null=True,verbose_name='Тип задачи (конкурса)', editable=False)
-    protection = models.ForeignKey(Company, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Защита', editable=False)
-    created = models.DateTimeField('Дата и время создания', default=timezone.now)
-    F = 'Филиал'
-    D = 'Дилер'
-    N = 'Другой'
-    Net = 'Нет'
-    CHOI = [(F, 'Филиал'), (D, 'Дилер'), (N, 'Другой'), (Net, 'Нет'), ]
-    win = models.CharField(max_length=6, choices=CHOI, blank=True, null=True, default=F, verbose_name='Победитель', editable=False)
-
-    number_tender = models.CharField(max_length=50, blank=True, verbose_name='Номер тендера или ссылка', editable=False)
-    number_zakaza = models.CharField(max_length=50, blank=True, verbose_name='Номер заказа', editable=False)
-    number_scheta = models.CharField(max_length=50, blank=True, verbose_name='Номер счета', editable=False)
-
-    url_tender = models.CharField(max_length=50, blank=True, verbose_name='Ссылка на папку с задачей', editable=False)
-
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
-
-    updated = models.DateTimeField(auto_now=True)
-
-
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город', editable=False)
-    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Заказчик', editable=False)
-    price1 = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True, verbose_name='Начальная цена', editable=False)
-
-    data1 = models.DateTimeField(null=True, blank=True, verbose_name='Дата начала')
-
-    group_prod = models.ForeignKey(Group_prod, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Товарная группа', editable=False)
-
-    info = models.CharField(max_length=200, blank=True, verbose_name='Примечание к товарным группам', editable=False)
-    filial = models.ForeignKey(Filial, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Филиал', editable=False)
-    price2 = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, verbose_name='Цена контракта', editable=False)
-
-
-    def __str__(self):
-        return f'{self.task_info} Заказчик: {self.type_tender}'
-
-    class Meta:
-        ordering = ['data1']
-        verbose_name_plural = 'Данные таблицы задач'
-        verbose_name = 'Данные задачи'
 
 
 class Protection(models.Model):
@@ -487,21 +433,27 @@ class ControlProduct(models.Model):
 class Info(models.Model):
     name = models.CharField(max_length=200,blank=True,null=True, verbose_name='Наименование')
     created = models.DateTimeField('Дата и время создания', default=timezone.now)
-
+    slug = models.SlugField(unique=True, max_length=100,null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
-    content = models.TextField(null=True,blank=True, verbose_name='Статьи')
-
-
-    text = models.TextField(max_length=100000,null=True, blank=True, verbose_name='Полезная информация')
+    content = models.TextField(null=True,blank=True, verbose_name='Описание')
+    tags = TaggableManager()
+    info_pdf = models.FileField(null=True, blank=True, upload_to=upload_to)
+    text = models.TextField(max_length=100000,null=True, blank=True, verbose_name='Доп. инфо')
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.author)
+        return f'{self.name} Автор: {self.author}'
+
+
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(translit(self.name, 'ru', reversed=True))
+        return super(Info, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-updated']
-        verbose_name_plural = 'Полезные информации'
-        verbose_name = 'Полезная информация'
+        verbose_name_plural = 'Помощь'
+        verbose_name = 'Помощь'
 
 
 
@@ -542,11 +494,68 @@ class Gruz(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.name_gruz}, Дата погрузки: {self.data_gruz}, Маршрут: {self.city_1}-{self.city_2}, Товар: {self.miks}'
+        return f'№{self.id}, {self.name_gruz}, Дата погрузки: {self.data_gruz}, Маршрут: {self.city_1}-{self.city_2}, Товар: {self.miks}, отв.: {self.staffer}'
 
     class Meta:
         ordering = ['-data_gruz']
         verbose_name_plural = 'Доставки'
         verbose_name = 'Доставка'
 
+class Tab(models.Model):
+    is_active=models.BooleanField(default=False,db_index=True, verbose_name='Завершено?')
+    # YES='Да'
+    # NO='Нет'
+    # CHOICES = [(YES, 'Да'), (NO, 'Нет'),]
+    # protection = models.CharField(max_length=3, choices=CHOICES, default=YES,verbose_name='Защита')
+    profit_info = models.CharField(max_length=200, blank=True,
+                                   verbose_name='Имя задачи')
+    task_info = models.TextField(max_length=5000, blank=True, verbose_name='Описание задачи')
+    project = models.ForeignKey(TenderTab, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Проект')
 
+    zakaz = models.ForeignKey(ZakazTab, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Заказ')
+    gruz = models.ForeignKey(Gruz, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Доставки')
+
+    data2 = models.DateTimeField(verbose_name='Сделать до:')
+    clock = models.CharField(default='В течение дня',max_length=50, verbose_name='Время')
+    staffer = models.ForeignKey(Staffer, on_delete=models.SET_NULL, null=True, verbose_name='отв. Сотрудник')
+    type_tender = models.ForeignKey(Type_tender, on_delete=models.SET_NULL, blank=True,null=True,verbose_name='Тип задачи (конкурса)', editable=False)
+    protection = models.ForeignKey(Company, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Защита', editable=False)
+    created = models.DateTimeField('Дата и время создания', default=timezone.now)
+    F = 'Филиал'
+    D = 'Дилер'
+    N = 'Другой'
+    Net = 'Нет'
+    CHOI = [(F, 'Филиал'), (D, 'Дилер'), (N, 'Другой'), (Net, 'Нет'), ]
+    win = models.CharField(max_length=6, choices=CHOI, blank=True, null=True, default=F, verbose_name='Победитель', editable=False)
+
+    number_tender = models.CharField(max_length=50, blank=True, verbose_name='Номер тендера или ссылка', editable=False)
+    number_zakaza = models.CharField(max_length=50, blank=True, verbose_name='Номер заказа', editable=False)
+    number_scheta = models.CharField(max_length=50, blank=True, verbose_name='Номер счета', editable=False)
+
+    url_tender = models.CharField(max_length=50, blank=True, verbose_name='Ссылка на папку с задачей', editable=False)
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Автор')
+
+    updated = models.DateTimeField(auto_now=True)
+
+
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Город', editable=False)
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Заказчик', editable=False)
+    price1 = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True, verbose_name='Начальная цена', editable=False)
+
+    data1 = models.DateTimeField(null=True, blank=True, verbose_name='Дата начала')
+
+    group_prod = models.ForeignKey(Group_prod, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Товарная группа', editable=False)
+
+    info = models.CharField(max_length=200, blank=True, verbose_name='Примечание к товарным группам', editable=False)
+    filial = models.ForeignKey(Filial, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Филиал', editable=False)
+    price2 = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, verbose_name='Цена контракта', editable=False)
+
+
+    def __str__(self):
+        return f'{self.task_info} Заказчик: {self.type_tender}, отв.: {self.staffer}'
+
+    class Meta:
+        ordering = ['data1']
+        verbose_name_plural = 'Данные таблицы задач'
+        verbose_name = 'Данные задачи'
