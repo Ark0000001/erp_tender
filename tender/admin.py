@@ -187,7 +187,7 @@ class DealerTabAdmin(ImportExportModelAdmin):
 
 admin.site.register(DealerTab,DealerTabAdmin)
 
-admin.site.register(IconsDealers)
+
 
 class PostavResource(resources.ModelResource):
     class Meta:

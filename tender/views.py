@@ -130,9 +130,9 @@ def Index_Cit(request):
 
 
 def Index_Kal(request):
-    icond = IconsDealers.objects.all()
+
     tabs = Tab.objects.filter(is_active=False, staffer__name__istartswith='Кальницкий').order_by('data2')
-    context = {'tabs': tabs, 'icond': icond, 'now': datetime.datetime.now()}
+    context = {'tabs': tabs, 'now': datetime.datetime.now()}
     return render(request, 'kal.html', context)
 
 
@@ -335,7 +335,7 @@ def ind(request):
 
 def dealerTab(request):
     # logger.info('Зашли в дилеры')
-    # icond=IconsDealers.objects.all()
+
     tasks = DealerTab.objects.filter(is_active_tasks=True).order_by('task_info')
 
     tabs = DealerTab.objects.filter(is_active=False).order_by('company')
@@ -344,7 +344,7 @@ def dealerTab(request):
 
 
 def postavTab(request):
-    # icond=IconsDealers.objects.all()
+
     # a=datetime.date.today()
     # bb = datetime.timedelta(days=int(PostavTab)))
     # cc=a+bb

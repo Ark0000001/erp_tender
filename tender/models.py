@@ -311,28 +311,6 @@ class DealerTab(models.Model):
         verbose_name = 'Данные юр. лица'
 
 
-class IconsDealers(models.Model):
-    pismo = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    org = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    comp = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    dog = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    dogp = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    dogv = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    dop = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    v1 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    v2 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    v3 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    v4 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    s1 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    s2 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    s3 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    s4 = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-
-    urdoc = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    info = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    resh = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-    sotr = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-
 
 
 # from datetime import datetime, timedelta

@@ -535,7 +535,7 @@ from datetime import time, datetime
 from django.core.management.base import BaseCommand
 from django.conf import settings
 import telebot
-from tender.models import Tab, DealerTab, IconsDealers, PostavTab, Product, ControlProduct, Info, TenderTab, Gruz
+from tender.models import Tab, DealerTab, PostavTab, Product, ControlProduct, Info, TenderTab, Gruz
 # import openai
 
 
@@ -590,7 +590,7 @@ class Command(BaseCommand):
                 #     bot.send_message(message.chat.id, reply[chunk:chunk + 4096])
 
             if message.text.startswith("latest"):
-                message.text = f"Последняя задача\n№: {latest_tab.id}\nИмя задачи: {latest_tab.profit_info}\nОписание: {latest_tab.task_info}\nОтв.: {latest_tab.staffer}"
+                message.text = f"Последняя задача\n№: {latest_tab.id}\nИмя задачи: {latest_tab.profit_info}\nОписание: {latest_tab.task_info}\nСделать до: {latest_tab.data2:%d.%m.%Y}\nОтв.: {latest_tab.staffer}"
                 bot.send_message(message.chat.id, message.text)
 
             if message.text.startswith("data"):
