@@ -110,24 +110,18 @@ class Group_prod(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=200, verbose_name='Наименование')
-    article = models.CharField(max_length=50, verbose_name='Артикул', unique=True, default='0')
-    price = models.CharField(max_length=10, blank=True, default='0.00', verbose_name='Цена')
-    status = models.CharField(max_length=2, blank=True, verbose_name='Статус', null=True)
-
-    group_prod = models.CharField(max_length=200, null=True, verbose_name='Товарная группа')
-    data1 = models.DateTimeField(null=True, blank=True, verbose_name='Дата пересчета 1')
-    data2 = models.DateTimeField(null=True, blank=True, verbose_name='Дата пересчета 2')
-    raznica1 = models.IntegerField(null=True, verbose_name='Отклонения 1', default=0)
-    raznica2 = models.IntegerField(null=True, verbose_name='Отклонения 2', default=0)
+    article = models.CharField(max_length=100, verbose_name='Артикул', unique=True, default='0')
+    id_tov = models.CharField(max_length=50, verbose_name='id_Товара', unique=True, default='0')
+    status = models.CharField(max_length=3, blank=True, verbose_name='Статус', null=True)
+    group_prod = models.ForeignKey(Group_prod, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Товарная группа')
 
     def __str__(self):
-        return str(self.name)
+        return f'{self.name} Арт.: {self.article} id_Товара: {self.id_tov}'
 
     class Meta:
         ordering = ['name']
         verbose_name_plural = 'Продукция'
         verbose_name = 'Продукт'
-
 
 class Filial(models.Model):
     name = models.CharField(max_length=200, verbose_name='Юр. лицо филиала (Техноимпорт, Промет, Инвалиды и тп')
@@ -479,14 +473,32 @@ class Gruz(models.Model):
         verbose_name_plural = 'Доставки'
         verbose_name = 'Доставка'
 
+
+class Ucenka(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name='Наименование')
+    kol= models.IntegerField(null=True, verbose_name='Количество')
+
+    pic1 = models.ImageField(null=True, blank=True, upload_to="images/ucenka/", verbose_name='Фото1',default='images/ucenka/default.jpg')
+    pic2 = models.ImageField(null=True, blank=True, upload_to="images/ucenka/", verbose_name='Фото2',default='images/ucenka/default.jpg')
+    pic3 = models.ImageField(null=True, blank=True, upload_to="images/ucenka/", verbose_name='Фото3',default='images/ucenka/default.jpg')
+
+    def __str__(self):
+        return f'{self.product} Кол.: {self.kol}'
+
+    class Meta:
+        ordering = ['product']
+        verbose_name_plural = 'Уценка'
+        verbose_name = 'Уценка'
+
+
+
 class Tab(models.Model):
     is_active=models.BooleanField(default=False,db_index=True, verbose_name='Завершено?')
     # YES='Да'
     # NO='Нет'
     # CHOICES = [(YES, 'Да'), (NO, 'Нет'),]
     # protection = models.CharField(max_length=3, choices=CHOICES, default=YES,verbose_name='Защита')
-    profit_info = models.CharField(max_length=200, blank=True,
-                                   verbose_name='Имя задачи')
+    profit_info = models.CharField(max_length=200, blank=True, verbose_name='Имя задачи')
     task_info = models.TextField(max_length=5000, blank=True, verbose_name='Описание задачи')
     project = models.ForeignKey(TenderTab, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Проект')
 

@@ -97,9 +97,9 @@ class ProductResource(resources.ModelResource):
         model = Product
 class ProductAdmin(ImportExportModelAdmin):
     tmp_storage_class = CacheStorage
-    list_display = ('group_prod','name','article','price', 'status','raznica1','raznica2')
+    list_display = ('group_prod','name','article','status','id_tov')
     list_display_links = ('name',)
-    search_fields = ('name',)
+    search_fields = ('name','article','id_tov')
     resource_class =ProductResource
 admin.site.register(Product,ProductAdmin)
 
@@ -354,3 +354,26 @@ class ZakazTabAdmin(admin.ModelAdmin):
         return form
 
 admin.site.register(ZakazTab,ZakazTabAdmin)
+
+class UcenkaAdmin(admin.ModelAdmin):
+
+    list_display = ('product','kol','pic1','pic2','pic3')
+    list_display_links = ('product',)
+    search_fields = ('product',)
+    autocomplete_fields = ['product']
+    actions = ('complete_tasks', 'incomplete_tasks',)
+
+    def complete_tasks(self, request, queryset):
+        count = queryset.update(is_active=True)
+        self.message_user(request, f'Отметили как завершенные, следующее количество: {count} ')
+
+    complete_tasks.short_description = 'Отметить как завершенные'
+
+    def incomplete_tasks(self, request, queryset):
+        count = queryset.update(is_active=False)
+        self.message_user(request, f'Отметили как незавершенные, следующее количество: {count} ')
+
+    incomplete_tasks.short_description = 'Отметить как незавершенные'
+
+
+admin.site.register(Ucenka,UcenkaAdmin)

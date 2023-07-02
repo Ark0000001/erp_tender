@@ -1,8 +1,7 @@
 from django.urls import path, include
 
 from .views import *
-import re
-from transliterate import translit
+
 
 # app_name = 'tender'
 urlpatterns = [
@@ -40,6 +39,7 @@ urlpatterns = [
     path('poisk_tasks', poisk_tasks, name='poisk_tasks'),
     path('poisk_tasks_arhiv_z', poisk_tasks_arhiv_z, name='poisk_tasks_arhiv_z'),
     path('tender/', tenderTab, name='tender'),
+    path('ucenka/', ucenka, name='ucenka'),
     path('gruz/', gruzTab, name='gruz'),
 
 

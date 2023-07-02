@@ -472,3 +472,9 @@ def zakazTab(request):
     return render(request, 'zakaz.html', context)
 
 
+def ucenka(request):
+    tabs = Ucenka.objects.order_by('product')
+
+    context = {'tabs': tabs}
+    return render(request, 'ucenka.html', context)
+
