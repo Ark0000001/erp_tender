@@ -116,7 +116,7 @@ class Product(models.Model):
     group_prod = models.ForeignKey(Group_prod, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Товарная группа')
 
     def __str__(self):
-        return f'{self.name} Арт.: {self.article} id_Товара: {self.id_tov}'
+        return f'{self.name}, Арт.: {self.article}, id_Товара: {self.id_tov}'
 
     class Meta:
         ordering = ['name']
@@ -476,8 +476,8 @@ class Gruz(models.Model):
 
 class Ucenka(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name='Наименование')
-    kol= models.IntegerField(null=True, verbose_name='Количество')
-
+    kol= models.IntegerField(null=True, verbose_name='Количество',default=1)
+    content = models.TextField(null=True, blank=True, verbose_name='Описание')
     pic1 = models.ImageField(null=True, blank=True, upload_to="images/ucenka/", verbose_name='Фото1',default='images/ucenka/default.jpg')
     pic2 = models.ImageField(null=True, blank=True, upload_to="images/ucenka/", verbose_name='Фото2',default='images/ucenka/default.jpg')
     pic3 = models.ImageField(null=True, blank=True, upload_to="images/ucenka/", verbose_name='Фото3',default='images/ucenka/default.jpg')

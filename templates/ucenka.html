@@ -2,7 +2,7 @@
 {% block content %}
 
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <div class="navbar-brand">Уцененный товар</div>
+        <div CLASS="logo1" class="navbar-brand"><a class="navbar-brand" href="/admin/tender/ucenka/add/">Уцененный товар</a></div>
     </nav>
     {% block otvet %}
         <div style="overflow:scroll;">
@@ -12,6 +12,7 @@
 
                     <th>Продукт</th>
                     <th>Количество</th>
+                    <th>Описание</th>
                     <th>Фото1</th>
                     <th>Фото2</th>
                     <th>Фото3</th>
@@ -27,13 +28,35 @@
                     {% for tab in tabs %}
                         <tbody>
                         <tr class="{% cycle 'bg-light' 'bg-white' %}">
-                            <td><a href="/admin/tender/ucenka/{{ tab.id }}/change">{{ tab.product }}</a></td>
+                            <td><a href="/admin/tender/ucenka/{{ tab.id }}/change">{{ tab.product.name }}</a></td>
                             <td><a href="/admin/tender/ucenka/{{ tab.id }}/change">{{ tab.kol }}</a></td>
-{#                            {% if tab.pic1 %}#}
-                            <td><img src="{{ tab.pic1.url }}" width="100" height="100" alt="Описание изображения"></td>
-{#                            {% else %}#}
-                            <td><img src="{{ tab.pic2.url }}" width="100" height="100" alt="Описание изображения"></td>
-                            <td><img src="{{ tab.pic3.url }}" width="100" height="100" alt="Описание изображения"></td>
+                            <td><a href="/admin/tender/ucenka/{{ tab.id }}/change">{{ tab.content }}</a></td>
+                            {% if tab.pic1 %}
+                             <td><a href="{{ tab.pic1.url }}" target="_blank" style="max-width: 100%; max-height: 100%;">
+    <img src="{{ tab.pic1.url }}" width="100" height="100" alt="Описание изображения">
+</a></td>
+                            {% else %}
+                            <td><a href="/media/images/ucenka/default.jpg" target="_blank" style="max-width: 100%; max-height: 100%;">
+    <img src="/media/images/ucenka/default.jpg" width="100" height="100" alt="Описание изображения">
+</a></td>{% endif %}
+{% if tab.pic2 %}
+                             <td><a href="{{ tab.pic2.url }}" target="_blank" style="max-width: 100%; max-height: 100%;">
+    <img src="{{ tab.pic2.url }}" width="100" height="100" alt="Описание изображения">
+</a></td>
+                            {% else %}
+                            <td><a href="/media/images/ucenka/default.jpg" target="_blank" style="max-width: 100%; max-height: 100%;">
+    <img src="/media/images/ucenka/default.jpg" width="100" height="100" alt="Описание изображения">
+</a></td>{% endif %}
+                        {% if tab.pic3 %}
+                             <td><a href="{{ tab.pic3.url }}" target="_blank" style="max-width: 100%; max-height: 100%;">
+    <img src="{{ tab.pic3.url }}" width="100" height="100" alt="Описание изображения">
+</a></td>
+                            {% else %}
+                            <td><a href="/media/images/ucenka/default.jpg" target="_blank" style="max-width: 100%; max-height: 100%;">
+    <img src="/media/images/ucenka/default.jpg" width="100" height="100" alt="Описание изображения">
+</a></td>{% endif %}
+
+
 
 
 
@@ -44,6 +67,7 @@
                 <td>Авторизуйтесь</td>
                 <td>Авторизуйтесь</td>
                 <td>Авторизуйтесь</td>
+                    <td>Авторизуйтесь</td>
                     <td>Авторизуйтесь</td>
                 </tbody>{% endif %}
             </table>

@@ -1,3 +1,5 @@
+import tempfile
+
 from django.views.decorators.clickjacking import xframe_options_exempt
 from taggit.models import Tag
 from .models import *
@@ -16,13 +18,13 @@ import datetime
 from django.views.generic.detail import DetailView
 
 
+from django.http import HttpResponse
+from django.views.generic import View
+
 
 
 class InfoDetailView(DetailView):
     model = Info
-
-
-
 
 
 class TagMixin(object):
@@ -40,9 +42,6 @@ class TagIndexView(TagMixin,ListView):
     def get_queryset(self):
         print(self.kwargs.get('tag_slug'))
         return Info.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
-
-
-
 
 
 @xframe_options_exempt
@@ -102,7 +101,6 @@ class Register(View):
 
 def Index(request):
 
-
     tabs_s = Tab.objects.filter(is_active=False, staffer__name__istartswith='Ситник').order_by('data2')
 
     tabs_k = Tab.objects.filter(is_active=False, staffer__name__istartswith='Кальницкий').order_by('data2')
@@ -123,6 +121,78 @@ def Index(request):
     return render(request, 'home.html', context)
 
 
+def IndexAll(request):
+
+    tabs_s = Tab.objects.filter(data2__month=timezone.now().month,is_active=False, staffer__name__istartswith='Ситник').order_by('data2')
+
+    tabs_k = Tab.objects.filter(data2__month=timezone.now().month,is_active=False, staffer__name__istartswith='Кальницкий').order_by('data2')
+
+    tabs_m = Tab.objects.filter(data2__month=timezone.now().month,is_active=False, staffer__name__istartswith='Муромцева').order_by('data2')
+
+    tabs_p = Tab.objects.filter(data2__month=timezone.now().month,is_active=False, staffer__name__istartswith='Пелых').order_by('data2')
+
+    tabs_mir = Tab.objects.filter(data2__month=timezone.now().month,is_active=False, staffer__name__istartswith='Мирончик').order_by('data2')
+    tabs_tur = Tab.objects.filter(data2__month=timezone.now().month,is_active=False, staffer__name__istartswith='Турова').order_by('data2')
+
+    tabs_e = Tab.objects.filter(data2__month=timezone.now().month,is_active=False, staffer__name__istartswith='Евтеев').order_by('data2')
+    tabs = Tab.objects.filter(data2__month=timezone.now().month,is_active=False).order_by('data2')
+    count = Tab.objects.filter(data2__month=timezone.now().month,is_active=False).count()
+    context = {'tabs': tabs, 'count': count,'tabs_s': tabs_s, 'tabs_k': tabs_k, 'tabs_m': tabs_m, 'tabs_p': tabs_p, 'tabs_mir': tabs_mir,
+               'tabs_e': tabs_e, 'tabs_tur': tabs_tur, 'now': datetime.datetime.now()}
+
+    return render(request, 'home2.html', context)
+
+
+from django.template.loader import render_to_string
+from io import BytesIO
+from django.http import FileResponse
+from weasyprint import HTML
+
+def generate_pdf_view(request):
+
+    response=HttpResponse(content_type='application/pdf')
+    response['Content-Disposition']='inline; attachment; filename=Tabs'+str(datetime.datetime.now())+'.pdf'
+    response['Content-Transfer-Encoding']='binary'
+
+    tabs = Tab.objects.filter(data2__month=timezone.now().month,is_active=False).order_by('data2')
+    count = Tab.objects.filter(data2__month=timezone.now().month, is_active=False).count()
+    month_dict = {1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель', 5: 'Май', 6: 'Июнь',
+                  7: 'Июль', 8: 'Август', 9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь'}
+    context = {'tabs': tabs, 'count': count, 'now': month_dict[datetime.datetime.now().month]}
+
+    # Рендеринг шаблона в html
+    html_string = render_to_string('pdf.html', context)
+
+    html = HTML(string=html_string)
+    result = html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        output=open(output.name,'rb')
+        response.write(output.read())
+
+    return response
+
+
+
+# class GeneratePdf(View):
+#     def get(self, request, *args, **kwargs):
+#         data = {
+#         "name": "Mama", #you can feach the data from database
+#         "id": 18,
+#         "amount": 333,
+#         }
+#         pdf = render_to_pdf('pdf.html',data)
+#         if pdf:
+#             response=HttpResponse(pdf,content_type='application/pdf')
+#             filename = "Report_for_%s.pdf" %(data['id'])
+#             content = "inline; filename= %s" %(filename)
+#             response['Content-Disposition']=content
+#             return response
+#         return HttpResponse("Page Not Found")
+
+
 def Index_Cit(request):
     tabs = Tab.objects.filter(is_active=False, staffer__name__istartswith='Ситник').order_by('data2')
     context = {'tabs': tabs, 'now': datetime.datetime.now()}
@@ -131,7 +201,7 @@ def Index_Cit(request):
 
 def Index_Kal(request):
 
-    tabs = Tab.objects.filter(is_active=False, staffer__name__istartswith='Кальницкий').order_by('data2')
+    tabs = Tab.objects.filter(data2__month=timezone.now().month, is_active=False, staffer__name__istartswith='Кальницкий').order_by('data2')
     context = {'tabs': tabs, 'now': datetime.datetime.now()}
     return render(request, 'kal.html', context)
 

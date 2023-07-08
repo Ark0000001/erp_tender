@@ -357,7 +357,7 @@ admin.site.register(ZakazTab,ZakazTabAdmin)
 
 class UcenkaAdmin(admin.ModelAdmin):
 
-    list_display = ('product','kol','pic1','pic2','pic3')
+    list_display = ('product','kol','pic1','pic2','pic3','content')
     list_display_links = ('product',)
     search_fields = ('product',)
     autocomplete_fields = ['product']

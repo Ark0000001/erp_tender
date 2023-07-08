@@ -3,15 +3,19 @@
 {% block content %}
 
 
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <div CLASS="logo1" class="navbar-brand"><a class="navbar-brand" href="/admin/tender/info/add/">Помощь</a></div>
+    </nav>
 
-    <div class="m-5">
 
- <div class="jumbotron jumbotron-fluid">
-  <div class="container">
-     <h1 class="navbar-brand"> <a class="nav-link " style="padding-left:5px;" href="{% url 'info' %}">Инструкции, регламенты</a></h1>
 
-  </div>
-</div>
+                {% if user.is_authenticated %}
+                    <p style="padding-left:15px;">Всего инструкций:
+                        {% for tab in tabs %}{% if forloop.last %}  <font color="cc0000">{{ forloop.counter }}</font>
+                        {% endif %}{% endfor %}</p>
+
+
+
 
 
     <nav class="navbar navbar-light bg-light">
@@ -56,6 +60,6 @@
     {% endfor %}
 
 </div>
-<p> </p><br/>
-  </div>
+<p> </p><br/>{% endif %}
+
 {% endblock %}

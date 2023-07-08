@@ -1,0 +1,126 @@
+{% load static %}
+{% load bootstrap4 %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+    body {
+        font-family: 'Lato', sans-serif;
+        background: #f4f4f4;
+    }
+
+    .table {
+        width: 90%;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+        border-collapse: collapse;
+        overflow: hidden;
+    }
+
+    .table th {
+        background-color: #20B2AA;
+        color: #fff;
+        font-weight: 700;
+        text-align: left;
+        padding: 15px;
+    }
+
+    .table tr {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .table tr:last-child {
+        border-bottom: 0;
+    }
+
+    .table tr.bg-light {
+        background-color: #f9f9f9;
+    }
+
+    .table td {
+        padding: 15px;
+        text-align: left;
+    }
+
+    .table a {
+        color: #20B2AA;
+        text-decoration: none;
+    }
+
+    .table a:hover {
+        color: #106763;
+    }
+
+    .table .bg-primary {
+        background-color: #F5F5F5;
+    }
+
+    .table .bg-white {
+        background-color: #FFF;
+    }
+
+    p {
+        padding-left: 15px;
+        color: #cc0000;
+        font-weight: bold;
+    }
+
+</style>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="navbar-brand">ЗАДАЧИ развернутые за текущий месяц ({{ now }})</div>
+</nav>
+
+<div>
+    <table class="table">
+        <thead>
+        <tr >
+
+            <th>Отв. сотрудник</th>
+
+            <th>Описание задачи</th>
+            <th>Проект/Заказ/Доставки</th>
+
+        </tr>
+        </thead>
+        <p></p>
+
+        <p style="padding-left:15px;">Всего задач: <font color="cc0000">{{ count }}</font></p>
+
+        {% for tab in tabs %}
+            <tbody>
+            <tr class="{% cycle 'bg-primary' 'bg-white' %}">
+
+                <td align="center">{{ tab.staffer.name }}<br><strong>Сделать
+                    до:</strong><br><font size="2" color="cc0000">{{ tab.data2|date:"d.m.Y" }}<br>Время: {{ tab.clock }}
+                </font></td>
+
+                <td><a href="/admin/tender/tab/{{ tab.id }}/change"><strong>№</strong>{{ tab.id }} -
+                    <strong>Имя:</strong> {{ tab.profit_info }} <br> <strong>Описание:</strong> {{ tab.task_info }}</a>
+                </td>
+                <td width="15%"><strong>Проект:</strong><br><a
+                        href="{% url 'tender' %}#{{ tab.project_id }}">{{ tab.project }}</a><br><strong>Нестандарт:</strong><br><a
+                        href="{% url 'zakaz' %}#{{ tab.zakaz_id }}">{{ tab.zakaz }}</a>
+                    <br><strong>Доставки:</strong><br><a href="{% url 'gruz' %}#{{ tab.gruz_id }}">{{ tab.gruz }}</a>
+                </td>
+
+
+            </tr>{% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+
+
+
+
+

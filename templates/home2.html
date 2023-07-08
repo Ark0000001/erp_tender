@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+<div class="navbar-brand">ЗАДАЧИ развернутые за текущий месяц</div>
+    <div class="navbar-brand"> <a class="btn btn-outline-success" href="{% url 'pdf' %}">ЗАДАЧИ - PDF</a></div>
+<form action="{% url 'poisk_tasks' %}" method="POST" class="text-white">
+    {% csrf_token %}
+
+    Поиск задачи: <input style="margin-bottom: 10px;" type="text" placeholder="Введите запрос" class="form-control" name="task_info"><br><br>
+
+    <input style="margin-bottom: 10px;" class="form-control" type="submit">
+
+</form>
+</nav>
+
+ {% block otvet %}
+  <div style="overflow:scroll;">
+    <table class="table">
+        <thead>
+        <tr align="center">
+
+            <th>Отв. сотрудник</th>
+
+            <th>Описание задачи</th>
+            <th>Проект/Заказ/Доставки</th>
+{#            <th>Сделать до:</th>#}
+{#            <th>Имя задачи</th>#}
+{#            <th>Дата и время создания</th>#}
+{#            <th>Тип задачи (конкурса)</th>#}
+
+        </tr>
+        </thead><p></p>
+{% if user.is_authenticated %}
+{#<p style="padding-left:15px;">Всего задач: {% for tab in tabs %}{% if forloop.last %}  <font color="cc0000">{{ forloop.counter}}</font>{% endif %}{% endfor %}</p>#}
+    <p style="padding-left:15px;">Всего задач: <font color="cc0000">{{ count }}</font></p>
+
+
+
+            {% for tab in tabs %}
+                <tbody >
+
+
+                <tr class="{% cycle 'bg-light' 'bg-white' %}">
+
+                    <td align="center"><img src="{{ tab.staffer.profile_pic.url }}" width="100" height="100"><br><strong>Сделать до:</strong><br><font size="2" color="cc0000">{{ tab.data2|date:"d.m.Y" }}<br>Время: {{ tab.clock }}</font></td>
+
+                     <td><a href="/admin/tender/tab/{{ tab.id }}/change"><strong>№</strong>{{ tab.id }} - <strong>Имя:</strong> {{ tab.profit_info }} <br> <strong>Описание:</strong> {{ tab.task_info }}</a></td>
+ <td width="15%"><strong>Проект:</strong><br><a href="{% url 'tender' %}#{{ tab.project_id }}">{{ tab.project }}</a><br><strong>Нестандарт:</strong><br><a href="{% url 'zakaz' %}#{{ tab.zakaz_id }}">{{ tab.zakaz }}</a>
+ <br><strong>Доставки:</strong><br><a href="{% url 'gruz' %}#{{ tab.gruz_id }}">{{ tab.gruz }}</a></td>
+{#                    <td class="nav-link text-danger">{{ tab.data2|date:"d.m.Y" }}</td>#}
+{#                    <td>{{ tab.profit_info }}</td>#}
+{#                    <td>{{ tab.created|date:"d.M.Y.D" }}</td>#}
+{#                    <td>{{ tab.type_tender }}</td>#}
+
+
+
+                </tr>{% endfor %}
+        {% else %}
+        <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+    <td>Авторизуйтесь</td>
+        <td>Авторизуйтесь</td>
+{#        <td>Авторизуйтесь</td>#}
+{#        <td>Авторизуйтесь</td>#}
+{#        <td>Авторизуйтесь</td>#}
+        </tbody>{% endif %}
+    </table>
+
+</div>
+
+{% endblock otvet %}
+
+
+
+{% endblock %}
+
